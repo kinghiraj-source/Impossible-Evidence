@@ -1,0 +1,2062 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Impossible Evidence — Adaptive Case Engine</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
+
+:root{
+  --bg:#0E1013;
+  --panel:#16181C;
+  --panel2:#1C1F24;
+  --paper:#EDE9DD;
+  --ink:#EDEBE6;
+  --dim:#9AA0A6;
+  --tape:#D4A82C;
+  --stamp:#B33A3A;
+  --line:#2A2D33;
+  --ok:#4f8a63;
+  --radius:10px;
+}
+
+*{box-sizing:border-box}
+
+html,body{
+  margin:0;
+  padding:0;
+}
+
+body{
+  background:var(--bg);
+  color:var(--ink);
+  font-family:Inter,system-ui,sans-serif;
+  padding-bottom:60px;
+  -webkit-font-smoothing:antialiased;
+}
+
+.app{
+  max-width:620px;
+  margin:auto;
+  padding:0 16px;
+}
+
+/* HEADER */
+
+.header{
+  padding:28px 0 16px;
+}
+
+.eyebrow{
+  font:11px "IBM Plex Mono";
+  letter-spacing:.14em;
+  color:var(--tape);
+  text-transform:uppercase;
+}
+
+.tape-rule{
+  height:6px;
+  width:64px;
+  margin:8px 0 14px;
+  border-radius:2px;
+  background:
+  repeating-linear-gradient(
+    45deg,
+    var(--tape),
+    var(--tape) 6px,
+    #111214 6px,
+    #111214 12px
+  );
+}
+
+h1{
+  font:700 clamp(25px,7vw,34px) Oswald,sans-serif;
+  margin:0 0 6px;
+  text-transform:uppercase;
+}
+
+.sub{
+  color:var(--dim);
+  font-size:14px;
+  line-height:1.5;
+  margin:0;
+}
+
+.meta{
+  display:flex;
+  gap:14px;
+  flex-wrap:wrap;
+  margin-top:14px;
+  font:12px "IBM Plex Mono";
+  color:var(--dim);
+}
+
+.meta b{
+  color:var(--ink);
+}
+
+/* SAVED CASES */
+
+.saved{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:12px 14px;
+  margin:18px 0;
+}
+
+.saved-title{
+  font:11px "IBM Plex Mono";
+  letter-spacing:.1em;
+  text-transform:uppercase;
+  color:var(--dim);
+  margin-bottom:8px;
+}
+
+.row{
+  display:flex;
+  gap:8px;
+  margin-bottom:8px;
+}
+
+.row:last-child{
+  margin-bottom:0;
+}
+
+.row>*:first-child{
+  flex:1;
+}
+
+/* SECTIONS */
+
+.section{
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  background:var(--panel);
+  padding:16px 14px 18px;
+  margin-bottom:16px;
+}
+
+.legend{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:14px;
+}
+
+.tag{
+  font:600 11px "IBM Plex Mono";
+  color:#0E1013;
+  background:var(--tape);
+  border-radius:4px;
+  padding:2px 7px;
+}
+
+.section-title{
+  font:14px Oswald,sans-serif;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+
+.field{
+  margin-bottom:15px;
+}
+
+.field:last-child{
+  margin-bottom:0;
+}
+
+label{
+  display:block;
+  font-size:13px;
+  font-weight:600;
+  margin-bottom:5px;
+}
+
+.hint{
+  font-size:12px;
+  color:var(--dim);
+  line-height:1.4;
+  margin:4px 0 0;
+}
+
+input,
+textarea,
+select{
+  width:100%;
+  background:var(--panel2);
+  border:1px solid var(--line);
+  color:var(--ink);
+  border-radius:8px;
+  padding:10px 11px;
+  font:14.5px Inter,sans-serif;
+  line-height:1.4;
+}
+
+textarea{
+  resize:vertical;
+  min-height:74px;
+}
+
+select{
+  appearance:none;
+  background-image:
+    linear-gradient(45deg,transparent 50%,var(--dim) 50%),
+    linear-gradient(135deg,var(--dim) 50%,transparent 50%);
+  background-position:
+    calc(100% - 18px) center,
+    calc(100% - 13px) center;
+  background-size:5px 5px,5px 5px;
+  background-repeat:no-repeat;
+}
+
+.two{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+}
+
+@media(max-width:450px){
+  .two{
+    grid-template-columns:1fr;
+  }
+}
+
+/* BUTTONS */
+
+button{
+  cursor:pointer;
+}
+
+.primary{
+  width:100%;
+  background:var(--tape);
+  color:#0E1013;
+  border:0;
+  border-radius:9px;
+  padding:14px;
+  font:600 15px Oswald,sans-serif;
+  text-transform:uppercase;
+  letter-spacing:.03em;
+}
+
+.ghost{
+  width:100%;
+  background:transparent;
+  color:var(--dim);
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:11px;
+  font:12px "IBM Plex Mono";
+  margin-top:10px;
+}
+
+.small{
+  background:var(--panel2);
+  border:1px solid var(--line);
+  color:var(--ink);
+  border-radius:8px;
+  padding:8px 10px;
+  font:12px "IBM Plex Mono";
+}
+
+.small:hover,
+.ghost:hover{
+  border-color:var(--tape);
+}
+
+.danger:hover{
+  border-color:var(--stamp);
+  color:var(--stamp);
+}
+
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible{
+  outline:2px solid var(--tape);
+  outline-offset:1px;
+}
+
+/* STATUS */
+
+.status{
+  min-height:16px;
+  margin-top:7px;
+  color:var(--tape);
+  font:12px "IBM Plex Mono";
+}
+
+.invalid input,
+.invalid textarea{
+  border-color:var(--stamp);
+}
+
+/* OUTPUT */
+
+.output{
+  margin-top:22px;
+}
+
+.lock{
+  background:var(--panel);
+  border:1px dashed #8C6B1A;
+  border-radius:8px;
+  padding:10px 12px;
+  margin-bottom:16px;
+  color:var(--tape);
+  font:12px "IBM Plex Mono";
+  line-height:1.5;
+}
+
+.seg{
+  background:var(--paper);
+  color:#1B1A16;
+  border-radius:var(--radius);
+  padding:16px;
+  margin-bottom:14px;
+  position:relative;
+  overflow:hidden;
+}
+
+.seg:before{
+  content:"";
+  position:absolute;
+  left:0;
+  right:0;
+  top:0;
+  height:5px;
+  background:
+  repeating-linear-gradient(
+    45deg,
+    var(--tape),
+    var(--tape) 8px,
+    #1B1A16 8px,
+    #1B1A16 16px
+  );
+}
+
+.seghead{
+  display:flex;
+  justify-content:space-between;
+  gap:8px;
+  margin:8px 0 10px;
+}
+
+.time{
+  font:600 13px "IBM Plex Mono";
+}
+
+.label2{
+  font:12px Oswald,sans-serif;
+  color:#5b584c;
+  text-transform:uppercase;
+}
+
+.prompt{
+  font:13px "IBM Plex Mono";
+  line-height:1.55;
+  white-space:pre-wrap;
+  margin:0 0 12px;
+}
+
+.copy{
+  background:#1B1A16;
+  color:var(--paper);
+  border:0;
+  border-radius:7px;
+  padding:9px 14px;
+  font:12px "IBM Plex Mono";
+}
+
+.copied{
+  background:var(--ok)!important;
+}
+
+/* SCORE */
+
+.score{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:8px;
+  margin-bottom:16px;
+}
+
+.score div{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:10px;
+}
+
+.score b{
+  display:block;
+  font:700 20px Oswald;
+  color:var(--tape);
+}
+
+.score span{
+  font-size:10px;
+  color:var(--dim);
+  text-transform:uppercase;
+}
+
+/* CHECKLIST */
+
+.check{
+  background:var(--panel);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:14px 16px;
+}
+
+.check h3{
+  font:13px Oswald;
+  text-transform:uppercase;
+  letter-spacing:.06em;
+  margin:0 0 8px;
+}
+
+.check ul{
+  margin:0;
+  padding-left:18px;
+  color:var(--dim);
+  font-size:13px;
+  line-height:1.7;
+}
+
+.check li::marker{
+  color:var(--tape);
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<header class="header">
+
+<div class="eyebrow">
+Impossible Evidence™ — Adaptive Field Kit
+</div>
+
+<div class="tape-rule"></div>
+
+<h1>Adaptive Case Engine</h1>
+
+<p class="sub">
+Describe the idea in plain language. The engine decides the hook,
+clue, camera, pacing, reveal, continuity and second twist —
+then builds two 8-second Flow/Veo prompts.
+</p>
+
+<div class="meta">
+
+<span>
+CASE <b id="caseNo">0000</b>
+</span>
+
+<span>
+RUNTIME <b>~16s</b>
+</span>
+
+<span>
+FORMAT <b>9:16</b>
+</span>
+
+<span>
+TYPE <b id="storyType">Adaptive</b>
+</span>
+
+</div>
+
+</header>
+
+
+<!-- SAVED CASES -->
+
+<section class="saved">
+
+<div class="saved-title">
+Saved Cases — stored locally in this browser
+</div>
+
+<div class="row">
+
+<select id="savedSelect">
+<option value="">— select a saved case —</option>
+</select>
+
+<button class="small" id="loadBtn">
+Load
+</button>
+
+<button class="small danger" id="deleteBtn">
+Delete
+</button>
+
+</div>
+
+<div class="row">
+
+<input
+id="saveName"
+placeholder="Name this case (e.g. Mirror Stranger)"
+>
+
+<button class="small" id="saveBtn">
+Save
+</button>
+
+</div>
+
+<div class="status" id="status"></div>
+
+</section>
+
+
+<form id="form">
+
+<!-- DISTRIBUTION -->
+
+<fieldset class="section">
+
+<div class="legend">
+<span class="tag">A</span>
+<span class="section-title">Distribution</span>
+</div>
+
+<div class="two">
+
+<div class="field">
+
+<label>Platform</label>
+
+<select id="platform">
+
+<option value="tiktok">
+TikTok
+</option>
+
+<option value="instagram">
+Instagram Reels
+</option>
+
+<option value="youtube">
+YouTube Shorts
+</option>
+
+<option value="facebook">
+Facebook Reels
+</option>
+
+</select>
+
+</div>
+
+
+<div class="field">
+
+<label>Region</label>
+
+<select id="region">
+
+<option value="us">
+US City
+</option>
+
+<option value="uk">
+UK City
+</option>
+
+<option value="ca">
+Canada City
+</option>
+
+<option value="au">
+Australia City
+</option>
+
+<option value="eu">
+W. Europe City
+</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<div class="field">
+
+<label>Case name</label>
+
+<input
+id="caseName"
+placeholder="e.g. The Mirror That Wasn't"
+>
+
+</div>
+
+</fieldset>
+
+
+<!-- STORY IDEA -->
+
+<fieldset class="section">
+
+<div class="legend">
+
+<span class="tag">B</span>
+
+<span class="section-title">
+The Idea — Plain Language
+</span>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Who and where?
+</label>
+
+<textarea
+id="scene"
+placeholder="Example: A woman in her late 20s wearing a black coat walks through a quiet London subway station."
+></textarea>
+
+<p class="hint">
+Give the character and place. Keep it factual.
+The engine locks this across both clips.
+</p>
+
+</div>
+
+
+<div class="field">
+
+<label>
+What impossible thing happens?
+</label>
+
+<textarea
+id="event"
+placeholder="Example: She sees her reflection moving differently in the glass beside her."
+></textarea>
+
+<p class="hint">
+Don't write camera directions.
+Just describe what the viewer sees.
+</p>
+
+</div>
+
+
+<div class="field">
+
+<label>
+What tiny clue can viewers miss?
+</label>
+
+<textarea
+id="clue"
+placeholder="Example: A poster behind the reflection shows a different date."
+></textarea>
+
+<p class="hint">
+A visual inconsistency that rewards a rewatch.
+</p>
+
+</div>
+
+</fieldset>
+
+
+<!-- REVEAL -->
+
+<fieldset class="section">
+
+<div class="legend">
+
+<span class="tag">C</span>
+
+<span class="section-title">
+Reveal + Twist
+</span>
+
+</div>
+
+
+<div class="field">
+
+<label>
+How is the illusion physically revealed?
+</label>
+
+<textarea
+id="reveal"
+placeholder="Example: The camera moves sideways and reveals that the glass is actually an opening into an identical platform."
+></textarea>
+
+<p class="hint">
+Show the explanation visually.
+Avoid narrator explanations.
+</p>
+
+</div>
+
+
+<div class="field">
+
+<label>
+What new detail remains unexplained?
+</label>
+
+<textarea
+id="twist"
+placeholder="Example: The double remains behind and slowly looks directly into the camera."
+></textarea>
+
+<p class="hint">
+One final mystery that creates comments.
+</p>
+
+</div>
+
+
+<div class="field">
+
+<label>
+Ending overlay
+</label>
+
+<select id="ending">
+
+<option>
+DID YOU SEE IT?
+</option>
+
+<option>
+WAIT… LOOK AGAIN.
+</option>
+
+<option>
+WHAT DID YOU NOTICE?
+</option>
+
+<option>
+None — I will add my own
+</option>
+
+</select>
+
+</div>
+
+</fieldset>
+
+
+<button
+type="button"
+class="primary"
+id="generate"
+>
+Build Adaptive Prompts
+</button>
+
+
+<button
+type="button"
+class="ghost"
+id="clear"
+>
+Clear all fields — start a new case
+</button>
+
+</form>
+
+
+<!-- OUTPUT -->
+
+<section class="output" id="output" hidden>
+
+
+<div class="score">
+
+<div>
+<b id="scoreHook">—</b>
+<span>Hook strength</span>
+</div>
+
+<div>
+<b id="scoreClue">—</b>
+<span>Rewatch clue</span>
+</div>
+
+<div>
+<b id="scoreTwist">—</b>
+<span>Comment twist</span>
+</div>
+
+</div>
+
+
+<div class="lock" id="lock"></div>
+
+
+<div class="seg">
+
+<div class="seghead">
+
+<span class="time">
+00:00 – 00:08
+</span>
+
+<span class="label2">
+Clip 1 · Hook + Illusion + Clue
+</span>
+
+</div>
+
+<p
+class="prompt"
+id="p1"
+></p>
+
+<button
+class="copy"
+data-target="p1"
+>
+Copy prompt
+</button>
+
+</div>
+
+
+<div class="seg">
+
+<div class="seghead">
+
+<span class="time">
+00:08 – 00:16
+</span>
+
+<span class="label2">
+Clip 2 · Reveal + Second Twist
+</span>
+
+</div>
+
+<p
+class="prompt"
+id="p2"
+></p>
+
+<button
+class="copy"
+data-target="p2"
+>
+Copy prompt
+</button>
+
+</div>
+
+
+<div class="check">
+
+<h3>
+Adaptive production checklist
+</h3>
+
+<ul id="checklist"></ul>
+
+</div>
+
+</section>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   IMPOSSIBLE EVIDENCE — ADAPTIVE ENGINE
+   ========================================================= */
+
+
+const REGIONS = {
+
+us:
+"a modern downtown Chicago location with believable contemporary architecture and crisp natural daylight",
+
+uk:
+"a contemporary London location near the South Bank with soft overcast daylight and believable British urban details",
+
+ca:
+"a modern downtown Toronto location with warm natural evening light and believable Canadian urban details",
+
+au:
+"a Sydney location near a beachside boardwalk with late-afternoon natural sunlight and believable Australian details",
+
+eu:
+"a minimalist Berlin location with soft grey daylight and understated European architecture"
+
+};
+
+
+const PLATFORM = {
+
+tiktok:{
+name:"TikTok",
+safe:
+"Keep the key face, clue and reveal away from the right-side interaction rail and lower caption area.",
+tip:
+"Make the visual clue readable without sound; avoid stacking text over the subject."
+},
+
+instagram:{
+name:"Instagram Reels",
+safe:
+"Keep the key reveal in the upper-middle frame and away from the lower UI/caption area.",
+tip:
+"Prioritize a strong first frame and a clean visual reveal above the lower UI."
+},
+
+youtube:{
+name:"YouTube Shorts",
+safe:
+"Keep critical visual information away from the top title area and lower interaction controls.",
+tip:
+"Design the final beat so it can visually echo the opening for a natural loop."
+},
+
+facebook:{
+name:"Facebook Reels",
+safe:
+"Keep faces and critical action away from the lower UI and right-side controls.",
+tip:
+"Make the clue understandable visually because autoplay may begin muted."
+}
+
+};
+
+
+const fields = [
+
+"platform",
+"region",
+"caseName",
+"scene",
+"event",
+"clue",
+"reveal",
+"twist",
+"ending"
+
+];
+
+
+const inputs = {};
+
+fields.forEach(id=>{
+  inputs[id] = document.getElementById(id);
+});
+
+
+document.getElementById("caseNo").textContent =
+Math.floor(1000 + Math.random()*9000);
+
+
+/* =========================================================
+   HELPERS
+   ========================================================= */
+
+
+function clean(value){
+
+return value
+.trim()
+.replace(/\s+/g," ");
+
+}
+
+
+function sentence(value){
+
+value = clean(value)
+.replace(/[.]+$/,"");
+
+return value + ".";
+
+}
+
+
+function lowerFirst(value){
+
+value = clean(value);
+
+return value
+? value.charAt(0).toLowerCase()+value.slice(1)
+: value;
+
+}
+
+
+/* =========================================================
+   ADAPTIVE STORY CLASSIFIER
+   ========================================================= */
+
+
+function classify(text){
+
+const t = text.toLowerCase();
+
+
+if(
+ /mirror|reflection|glass|window/.test(t)
+){
+
+return [
+"Reflection anomaly",
+"parallax / reflection"
+];
+
+}
+
+
+if(
+ /disappear|vanish|gone|invisible/.test(t)
+){
+
+return [
+"Disappearance",
+"occlusion / continuity"
+];
+
+}
+
+
+if(
+ /door|room|building|corridor|wall|street|architecture|stairs/.test(t)
+){
+
+return [
+"Impossible space",
+"perspective / spatial reveal"
+];
+
+}
+
+
+if(
+ /shadow|sunlight|light/.test(t)
+){
+
+return [
+"Shadow anomaly",
+"lighting / geometry"
+];
+
+}
+
+
+if(
+ /time|clock|watch|date|yesterday|future|past/.test(t)
+){
+
+return [
+"Time anomaly",
+"repeated environmental detail"
+];
+
+}
+
+
+if(
+ /animal|dog|cat|bird|horse|monkey|wild/.test(t)
+){
+
+return [
+"Animal anomaly",
+"natural behavior / environmental clue"
+];
+
+}
+
+
+if(
+ /phone|screen|computer|camera|security/.test(t)
+){
+
+return [
+"Technology anomaly",
+"screen / viewpoint reveal"
+];
+
+}
+
+
+return [
+"Physical anomaly",
+"occlusion / parallax reveal"
+];
+
+}
+
+
+/* =========================================================
+   ADAPTIVE CAMERA MECHANICS
+   ========================================================= */
+
+
+function adaptiveMechanic(type){
+
+const mechanisms = {
+
+"Reflection anomaly":
+"Use a controlled lateral parallax move so the viewer can physically understand that the reflection is not a normal reflection.",
+
+"Disappearance":
+"Use a continuous take with foreground occlusion or a believable blind spot; do not use a visible cut or morph.",
+
+"Impossible space":
+"Use a slow lateral or forward perspective shift that reveals the spatial geometry without changing the set.",
+
+"Shadow anomaly":
+"Use a motivated camera shift that keeps the light source and subject visible enough for the mismatch to register.",
+
+"Time anomaly":
+"Repeat at least one fixed environmental detail so the temporal inconsistency feels physical rather than edited.",
+
+"Animal anomaly":
+"Keep animal motion anatomically plausible and let the environmental clue carry the mystery rather than exaggerated behavior.",
+
+"Technology anomaly":
+"Keep screen geometry, reflections and device orientation stable; reveal the anomaly through viewpoint change.",
+
+"Physical anomaly":
+"Use a motivated parallax or occlusion reveal; preserve object positions so the trick feels physically possible."
+
+};
+
+return mechanisms[type] || mechanisms["Physical anomaly"];
+
+}
+
+
+/* =========================================================
+   CONTINUITY
+   ========================================================= */
+
+
+function continuity(scene){
+
+return `
+
+CONTINUITY LOCK:
+
+${sentence(scene)}
+
+Keep the exact same character identity, age, face, hair,
+wardrobe, accessories, props, location, time of day,
+weather, lighting direction and environmental layout
+across both clips.
+
+No character replacement.
+No wardrobe change.
+No location drift.
+No unexplained prop changes.
+
+`;
+
+}
+
+
+/* =========================================================
+   COMMON VIDEO QUALITY
+   ========================================================= */
+
+
+function common(){
+
+return `
+
+Photorealistic live-action.
+
+Physically believable real-world materials.
+
+Natural skin and hands.
+
+Stable facial identity.
+
+Realistic reflections and shadows.
+
+Natural motion blur.
+
+Subtle cinematic contrast.
+
+No fantasy glow.
+
+No CGI look.
+
+No morphing.
+
+No texture flicker.
+
+No duplicate limbs.
+
+No random people appearing.
+
+No logos.
+
+No watermarks.
+
+No on-screen text.
+
+No subtitles.
+
+Ambient location sound only.
+
+No music.
+
+Vertical 9:16.
+
+Exactly 8 seconds.
+
+High-detail cinematic video.
+
+`;
+
+}
+
+
+/* =========================================================
+   QUALITY SCORE
+   ========================================================= */
+
+
+function scoreText(value,type){
+
+const length = clean(value).length;
+
+if(type==="hook"){
+
+if(length>55)return "9/10";
+
+if(length>30)return "8/10";
+
+return "6/10";
+
+}
+
+
+if(type==="clue"){
+
+if(length>25)return "9/10";
+
+if(length>10)return "8/10";
+
+return "6/10";
+
+}
+
+
+if(length>30)return "9/10";
+
+if(length>15)return "8/10";
+
+return "6/10";
+
+}
+
+
+/* =========================================================
+   VALIDATION
+   ========================================================= */
+
+
+function validate(){
+
+let firstInvalid = null;
+
+[
+"caseName",
+"scene",
+"event",
+"clue",
+"reveal",
+"twist"
+
+].forEach(id=>{
+
+const el = inputs[id];
+
+const field = el.closest(".field");
+
+const empty = !clean(el.value);
+
+if(field){
+
+field.classList.toggle(
+"invalid",
+empty
+);
+
+}
+
+if(empty && !firstInvalid){
+
+firstInvalid = el;
+
+}
+
+});
+
+return firstInvalid;
+
+}
+
+
+/* =========================================================
+   BUILD ENGINE
+   ========================================================= */
+
+
+function build(){
+
+const invalid = validate();
+
+if(invalid){
+
+invalid.focus();
+
+invalid.scrollIntoView({
+behavior:"smooth",
+block:"center"
+});
+
+return;
+
+}
+
+
+const scene = clean(inputs.scene.value);
+const event = clean(inputs.event.value);
+const clue = clean(inputs.clue.value);
+const reveal = clean(inputs.reveal.value);
+const twist = clean(inputs.twist.value);
+
+
+const allText =
+[
+scene,
+event,
+clue,
+reveal,
+twist
+].join(" ");
+
+
+const [
+storyType,
+mechanism
+] = classify(allText);
+
+
+document.getElementById("storyType")
+.textContent = storyType;
+
+
+const region =
+REGIONS[inputs.region.value];
+
+
+const platform =
+PLATFORM[inputs.platform.value];
+
+
+const lock =
+continuity(scene);
+
+
+const engine =
+`
+
+ADAPTIVE DIRECTOR:
+
+Story type: ${storyType}.
+
+Reveal mechanism:
+${adaptiveMechanic(storyType)}
+
+Favor one continuous visual logic over flashy edits.
+
+The impossible event must be instantly legible.
+
+The clue must be visible but not emphasized.
+
+The reveal must be caused by camera movement,
+spatial change, occlusion or a physically understandable
+change in viewpoint.
+
+`;
+
+
+/* =========================================================
+   CLIP 1
+   ========================================================= */
+
+
+const prompt1 =
+
+`${lock}
+
+${engine}
+
+CLIP 1 — HOOK / IMPOSSIBLE EVENT / HIDDEN CLUE:
+
+${sentence(event)}
+
+Set the scene naturally in ${region}.
+
+Open on the most visually intriguing moment immediately.
+
+Make the subject and anomaly readable within the first second.
+
+${sentence(clue)}
+
+Place this clue naturally in the frame for a brief readable moment.
+
+Do not zoom toward the clue.
+
+Do not point at the clue.
+
+Do not highlight the clue.
+
+Do not add text.
+
+Camera movement should be restrained and motivated by the subject.
+
+Build slight visual tension toward the end of the clip.
+
+Preserve realistic spatial relationships and object positions.
+
+CAMERA:
+
+Adaptive ${mechanism}
+
+No jump cuts.
+
+No artificial whip transitions.
+
+${common()}`;
+
+
+/* =========================================================
+   CLIP 2
+   ========================================================= */
+
+
+const prompt2 =
+
+`${lock}
+
+${engine}
+
+CLIP 2 — CONTINUOUS REVEAL / SECOND TWIST:
+
+Start from the exact final spatial state of Clip 1.
+
+${sentence(reveal)}
+
+Make the reveal happen visibly in the same continuous visual world.
+
+Use a motivated camera movement that exposes the physical mechanism.
+
+Do not explain the reveal with narration.
+
+Do not explain the reveal with text.
+
+Immediately after the reveal,
+
+${lowerFirst(twist)}
+
+Keep this final detail unexplained.
+
+Make it visually clear enough to provoke interpretation.
+
+End on a strong frame that can naturally echo the opening
+when the video replays.
+
+CAMERA:
+
+Controlled parallax reveal with stable subject identity
+and locked environment.
+
+${common()}`;
+
+
+document.getElementById("p1").textContent =
+prompt1;
+
+document.getElementById("p2").textContent =
+prompt2;
+
+
+document.getElementById("lock").textContent =
+`LOCKED → ${storyType} · ${scene}`;
+
+
+/* SCORE */
+
+document.getElementById("scoreHook").textContent =
+scoreText(event,"hook");
+
+document.getElementById("scoreClue").textContent =
+scoreText(clue,"clue");
+
+document.getElementById("scoreTwist").textContent =
+scoreText(twist,"twist");
+
+
+/* =========================================================
+   CHECKLIST
+   ========================================================= */
+
+
+const ending =
+inputs.ending.value === "None — I will add my own"
+
+? "Add your own short end overlay in the final 1–2 seconds."
+
+: `Add end overlay "${inputs.ending.value}" in the final 1–2 seconds during editing, not inside the generation prompt.`;
+
+
+const checklist = [
+
+`Generate Clip 1 first, then Clip 2. Use 9:16 and exactly 8 seconds per clip.`,
+
+"Use the last frame/spatial state of Clip 1 as the visual starting point for Clip 2 if your video tool supports reference frames.",
+
+"Merge Clip 1 → Clip 2 and trim only dead frames. Avoid adding a transition between them.",
+
+ending,
+
+platform.safe,
+
+platform.tip,
+
+`Recommended mechanism: ${mechanism}.`,
+
+"Export 1080×1920 H.264 after checking faces, hands, reflections, clue visibility and the Clip 1→2 join."
+
+];
+
+
+document.getElementById("checklist").innerHTML =
+checklist
+.map(item=>`<li>${item}</li>`)
+.join("");
+
+
+/* SHOW */
+
+const output =
+document.getElementById("output");
+
+output.hidden = false;
+
+output.scrollIntoView({
+behavior:"smooth",
+block:"start"
+});
+
+}
+
+
+/* =========================================================
+   GENERATE
+   ========================================================= */
+
+
+document
+.getElementById("generate")
+.addEventListener(
+"click",
+build
+);
+
+
+/* =========================================================
+   CLEAR
+   ========================================================= */
+
+
+document
+.getElementById("clear")
+.addEventListener(
+"click",
+()=>{
+
+[
+"caseName",
+"scene",
+"event",
+"clue",
+"reveal",
+"twist"
+
+].forEach(id=>{
+inputs[id].value="";
+});
+
+
+inputs.platform.value="tiktok";
+inputs.region.value="us";
+inputs.ending.selectedIndex=0;
+
+
+document.getElementById("output").hidden=true;
+
+document
+.querySelectorAll(".invalid")
+.forEach(el=>{
+el.classList.remove("invalid");
+});
+
+}
+);
+
+
+/* =========================================================
+   REMOVE VALIDATION STATE WHILE TYPING
+   ========================================================= */
+
+
+document
+.querySelectorAll("textarea,input")
+.forEach(el=>{
+
+el.addEventListener(
+"input",
+()=>{
+
+const field =
+el.closest(".field");
+
+if(field){
+
+field.classList.remove("invalid");
+
+}
+
+}
+);
+
+});
+
+
+/* =========================================================
+   COPY
+   ========================================================= */
+
+
+document
+.querySelectorAll(".copy")
+.forEach(button=>{
+
+button.addEventListener(
+"click",
+async()=>{
+
+const text =
+document
+.getElementById(button.dataset.target)
+.textContent;
+
+
+try{
+
+await navigator.clipboard.writeText(text);
+
+}catch(error){
+
+const textarea =
+document.createElement("textarea");
+
+textarea.value=text;
+
+document.body.appendChild(textarea);
+
+textarea.select();
+
+document.execCommand("copy");
+
+textarea.remove();
+
+}
+
+
+button.textContent="Copied ✓";
+
+button.classList.add("copied");
+
+
+setTimeout(()=>{
+
+button.textContent="Copy prompt";
+
+button.classList.remove("copied");
+
+},1400);
+
+}
+);
+
+});
+
+
+/* =========================================================
+   LOCAL STORAGE
+   ========================================================= */
+
+const STORAGE_KEY =
+"impossibleEvidenceAdaptiveCasesV2";
+
+
+function getSavedCases(){
+
+try{
+
+return JSON.parse(
+localStorage.getItem(STORAGE_KEY) || "{}"
+);
+
+}catch(error){
+
+return {};
+
+}
+
+}
+
+
+function collectData(){
+
+const data={};
+
+fields.forEach(id=>{
+
+data[id]=inputs[id].value;
+
+});
+
+return data;
+
+}
+
+
+function slug(value){
+
+return clean(value)
+.toLowerCase()
+.replace(/[^a-z0-9]+/g,"-")
+.replace(/^-|-$/g,"")
+.slice(0,60)
+|| "case";
+
+}
+
+
+function setStatus(message,error=false){
+
+const status =
+document.getElementById("status");
+
+status.textContent=message;
+
+status.style.color =
+error
+? "var(--stamp)"
+: "var(--tape)";
+
+setTimeout(()=>{
+
+status.textContent="";
+
+},2500);
+
+}
+
+
+/* =========================================================
+   REFRESH SAVED LIST
+   ========================================================= */
+
+
+function refreshSavedList(){
+
+const select =
+document.getElementById("savedSelect");
+
+const cases =
+getSavedCases();
+
+
+select.innerHTML =
+'<option value="">— select a saved case —</option>';
+
+
+Object.keys(cases)
+.sort()
+.forEach(key=>{
+
+const option =
+document.createElement("option");
+
+option.value=key;
+
+option.textContent =
+cases[key].caseName || key;
+
+select.appendChild(option);
+
+});
+
+}
+
+
+/* =========================================================
+   SAVE
+   ========================================================= */
+
+
+document
+.getElementById("saveBtn")
+.addEventListener(
+"click",
+()=>{
+
+const name =
+clean(
+document.getElementById("saveName").value
+)
+||
+clean(inputs.caseName.value);
+
+
+if(!name){
+
+setStatus(
+"Give the case a name first.",
+true
+);
+
+return;
+
+}
+
+
+const cases =
+getSavedCases();
+
+
+const key =
+slug(name);
+
+
+cases[key]={
+...collectData(),
+updated:new Date().toISOString()
+};
+
+
+try{
+
+localStorage.setItem(
+STORAGE_KEY,
+JSON.stringify(cases)
+);
+
+document.getElementById("saveName").value="";
+
+refreshSavedList();
+
+document.getElementById("savedSelect").value=key;
+
+setStatus(
+"Saved ✓ — stored only in this browser."
+);
+
+}catch(error){
+
+setStatus(
+"Could not save this case.",
+true
+);
+
+}
+
+}
+);
+
+
+/* =========================================================
+   LOAD
+   ========================================================= */
+
+
+document
+.getElementById("loadBtn")
+.addEventListener(
+"click",
+()=>{
+
+const key =
+document.getElementById("savedSelect").value;
+
+
+if(!key){
+
+setStatus(
+"Pick a saved case first.",
+true
+);
+
+return;
+
+}
+
+
+const cases =
+getSavedCases();
+
+
+if(!cases[key]){
+
+setStatus(
+"Could not find that case.",
+true
+);
+
+return;
+
+}
+
+
+const data =
+cases[key];
+
+
+fields.forEach(id=>{
+
+if(
+data[id] !== undefined
+){
+
+inputs[id].value =
+data[id];
+
+}
+
+});
+
+
+document.getElementById("output").hidden=true;
+
+setStatus("Loaded ✓");
+
+}
+);
+
+
+/* =========================================================
+   DELETE
+   ========================================================= */
+
+
+document
+.getElementById("deleteBtn")
+.addEventListener(
+"click",
+()=>{
+
+const key =
+document.getElementById("savedSelect").value;
+
+
+if(!key){
+
+setStatus(
+"Pick a saved case first.",
+true
+);
+
+return;
+
+}
+
+
+const cases =
+getSavedCases();
+
+
+const caseName =
+cases[key]?.caseName || key;
+
+
+const confirmed =
+confirm(
+`Delete “${caseName}”?`
+);
+
+
+if(!confirmed){
+
+return;
+
+}
+
+
+delete cases[key];
+
+
+try{
+
+localStorage.setItem(
+STORAGE_KEY,
+JSON.stringify(cases)
+);
+
+refreshSavedList();
+
+setStatus("Deleted ✓");
+
+}catch(error){
+
+setStatus(
+"Could not delete this case.",
+true
+);
+
+}
+
+}
+);
+
+
+/* =========================================================
+   INITIALIZE
+   ========================================================= */
+
+refreshSavedList();
+
+</script>
+
+</body>
+</html>
