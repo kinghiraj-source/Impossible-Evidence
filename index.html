@@ -1,2082 +1,466 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Impossible Moment — Adaptive Viral Engine</title>
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap');
-
-:root{
-  --bg:#0b0d10;
-  --panel:#15181d;
-  --panel2:#1b1f25;
-  --paper:#eee9dc;
-  --ink:#eeeae2;
-  --dim:#969ca5;
-  --yellow:#d6a92c;
-  --red:#b63d3d;
-  --green:#4e865f;
-  --line:#2a2e35;
-  --radius:10px;
-}
-
-*{box-sizing:border-box}
-
-html,body{
-  margin:0;
-  padding:0;
-  background:var(--bg);
-  color:var(--ink);
-  font-family:Inter,system-ui,sans-serif;
-}
-
-body{
-  padding-bottom:60px;
-}
-
-.app{
-  max-width:620px;
-  margin:auto;
-  padding:0 16px;
-}
-
-.header{
-  padding:28px 0 18px;
-}
-
-.eyebrow{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:11px;
-  letter-spacing:.14em;
-  color:var(--yellow);
-  text-transform:uppercase;
-}
-
-.tape{
-  height:6px;
-  width:76px;
-  margin:9px 0 14px;
-  background:repeating-linear-gradient(
-    45deg,
-    var(--yellow),
-    var(--yellow) 7px,
-    #111 7px,
-    #111 14px
-  );
-}
-
-h1{
-  font-family:Oswald,sans-serif;
-  font-size:30px;
-  line-height:1.05;
-  margin:0 0 7px;
-  text-transform:uppercase;
-}
-
-.sub{
-  color:var(--dim);
-  font-size:14px;
-  line-height:1.55;
-  max-width:52ch;
-}
-
-.meta{
-  display:flex;
-  gap:14px;
-  flex-wrap:wrap;
-  margin-top:14px;
-  font-family:'IBM Plex Mono',monospace;
-  font-size:11px;
-  color:var(--dim);
-}
-
-.meta b{color:var(--ink)}
-
-.section{
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  padding:16px 14px 18px;
-  margin-bottom:15px;
-}
-
-.legend{
-  display:flex;
-  align-items:center;
-  gap:9px;
-  margin-bottom:14px;
-}
-
-.tag{
-  background:var(--yellow);
-  color:#111;
-  font-family:'IBM Plex Mono',monospace;
-  font-weight:700;
-  font-size:11px;
-  padding:3px 7px;
-  border-radius:4px;
-}
-
-.title{
-  font-family:Oswald,sans-serif;
-  font-size:14px;
-  letter-spacing:.07em;
-  text-transform:uppercase;
-}
-
-.field{
-  margin-bottom:14px;
-}
-
-.field:last-child{margin-bottom:0}
-
-label{
-  display:block;
-  font-size:13px;
-  font-weight:600;
-  margin-bottom:5px;
-}
-
-.hint{
-  color:var(--dim);
-  font-size:12px;
-  line-height:1.45;
-  margin:4px 0 0;
-}
-
-input,textarea,select{
-  width:100%;
-  background:var(--panel2);
-  border:1px solid var(--line);
-  color:var(--ink);
-  border-radius:8px;
-  padding:10px 11px;
-  font:inherit;
-  font-size:14px;
-}
-
-textarea{
-  resize:vertical;
-  min-height:70px;
-}
-
-input:focus,textarea:focus,select:focus{
-  outline:2px solid var(--yellow);
-  outline-offset:1px;
-}
-
-.grid{
-  display:grid;
-  grid-template-columns:1fr 1fr;
-  gap:10px;
-}
-
-@media(max-width:430px){
-  .grid{grid-template-columns:1fr}
-}
-
-.primary{
-  width:100%;
-  border:0;
-  border-radius:9px;
-  background:var(--yellow);
-  color:#111;
-  padding:14px;
-  font-family:Oswald,sans-serif;
-  font-size:16px;
-  text-transform:uppercase;
-  cursor:pointer;
-}
-
-.secondary{
-  width:100%;
-  background:transparent;
-  color:var(--dim);
-  border:1px solid var(--line);
-  border-radius:9px;
-  padding:11px;
-  font-family:'IBM Plex Mono',monospace;
-  font-size:12px;
-  cursor:pointer;
-  margin-top:9px;
-}
-
-.secondary:hover{
-  color:var(--ink);
-  border-color:var(--dim);
-}
-
-.output{
-  margin-top:22px;
-}
-
-.score-card{
-  background:var(--panel);
-  border:1px solid var(--yellow);
-  border-radius:var(--radius);
-  padding:15px;
-  margin-bottom:15px;
-}
-
-.score-flex{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:15px;
-}
-
-.score{
-  font-family:Oswald,sans-serif;
-  font-size:34px;
-  color:var(--yellow);
-}
-
-.score-label{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:10px;
-  color:var(--dim);
-  text-transform:uppercase;
-}
-
-.verdict{
-  font-size:13px;
-  line-height:1.5;
-  margin-top:8px;
-}
-
-.pill{
-  border:1px solid var(--line);
-  border-radius:999px;
-  padding:6px 9px;
-  font-family:'IBM Plex Mono',monospace;
-  font-size:10px;
-  color:var(--yellow);
-}
-
-.box{
-  background:var(--panel);
-  border:1px solid var(--line);
-  border-radius:var(--radius);
-  padding:15px;
-  margin-bottom:15px;
-}
-
-.box h3{
-  font-family:Oswald,sans-serif;
-  font-size:14px;
-  text-transform:uppercase;
-  letter-spacing:.06em;
-  margin:0 0 10px;
-}
-
-.box ul{
-  margin:0;
-  padding-left:19px;
-  color:var(--dim);
-  font-size:13px;
-  line-height:1.7;
-}
-
-.box li::marker{
-  color:var(--yellow);
-}
-
-.prompt{
-  background:var(--paper);
-  color:#191815;
-  border-radius:var(--radius);
-  padding:16px;
-  margin-bottom:15px;
-}
-
-.prompt:before{
-  content:"";
-  display:block;
-  height:5px;
-  margin:-16px -16px 13px;
-  background:repeating-linear-gradient(
-    45deg,
-    var(--yellow),
-    var(--yellow) 8px,
-    #191815 8px,
-    #191815 16px
-  );
-}
-
-.prompt-head{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:8px;
-  margin-bottom:9px;
-}
-
-.prompt-title{
-  font-family:Oswald,sans-serif;
-  font-size:14px;
-  text-transform:uppercase;
-}
-
-.prompt-time{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:10px;
-}
-
-.prompt-text{
-  white-space:pre-wrap;
-  font-family:'IBM Plex Mono',monospace;
-  font-size:12.5px;
-  line-height:1.58;
-}
-
-.copy{
-  background:#191815;
-  color:var(--paper);
-  border:0;
-  border-radius:7px;
-  padding:9px 13px;
-  font-family:'IBM Plex Mono',monospace;
-  font-size:12px;
-  cursor:pointer;
-  margin-top:4px;
-}
-
-.copy.done{
-  background:var(--green);
-}
-
-.output-grid{
-  display:grid;
-  grid-template-columns:1fr;
-  gap:0;
-}
-
-textarea.output-text{
-  min-height:110px;
-  background:var(--panel2);
-}
-
-.status{
-  min-height:17px;
-  margin-top:7px;
-  color:var(--yellow);
-  font-family:'IBM Plex Mono',monospace;
-  font-size:11px;
-}
-
-.saved-row{
-  display:flex;
-  gap:8px;
-  margin-bottom:8px;
-}
-
-.saved-row select{flex:1}
-
-.small-btn{
-  background:var(--panel2);
-  color:var(--ink);
-  border:1px solid var(--line);
-  border-radius:7px;
-  padding:9px 11px;
-  font-family:'IBM Plex Mono',monospace;
-  font-size:11px;
-  cursor:pointer;
-}
-
-.good{color:var(--green)}
-.bad{color:var(--red)}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Little Paw Tales - Master Pro Prompt & Content Engine</title>
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --secondary: #EC4899;
+            --bg: #0F172A;
+            --card: #1E293B;
+            --card-border: #334155;
+            --text: #F8FAFC;
+            --text-muted: #94A3B8;
+            --accent: #38BDF8;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 30px 15px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background-color: var(--card);
+            max-width: 900px;
+            width: 100%;
+            padding: 30px;
+            border-radius: 16px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.6);
+            border: 1px solid var(--card-border);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        h1 {
+            font-size: 26px;
+            margin: 0 0 5px 0;
+            color: #F1F5F9;
+            background: linear-gradient(90deg, #38BDF8, #818CF8, #EC4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p.subtitle {
+            color: var(--text-muted);
+            font-size: 14px;
+            margin: 0;
+        }
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            color: #CBD5E1;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        select, textarea, input {
+            width: 100%;
+            padding: 12px;
+            background-color: #0B0F19;
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            color: var(--text);
+            font-size: 14px;
+            box-sizing: border-box;
+            resize: vertical;
+        }
+        select:focus, textarea:focus, input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+        }
+        .warning {
+            background-color: rgba(234, 179, 8, 0.08);
+            border-left: 4px solid #EAB308;
+            padding: 12px;
+            margin-bottom: 25px;
+            font-size: 13px;
+            color: #FEF08A;
+            border-radius: 4px;
+            line-height: 1.5;
+        }
+        .output-section {
+            background-color: #0B0F19;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .output-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .output-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--accent);
+            text-transform: uppercase;
+        }
+        .output-box {
+            font-family: monospace;
+            font-size: 13px;
+            line-height: 1.5;
+            color: #E2E8F0;
+            white-space: pre-wrap;
+            background: #111827;
+            padding: 14px;
+            border-radius: 6px;
+            border: 1px dashed #374151;
+            max-height: 180px;
+            overflow-y: auto;
+        }
+        .btn-copy {
+            background-color: #374151;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .btn-copy:hover {
+            background-color: #4B5563;
+        }
+        .btn-copy.success {
+            background-color: #16A34A !important;
+        }
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 16px;
+            font-size: 16px;
+            font-weight: 700;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+            transition: transform 0.1s, opacity 0.2s;
+        }
+        .btn-primary:hover {
+            opacity: 0.95;
+            transform: translateY(-1px);
+        }
+    </style>
 </head>
-
 <body>
 
-<div class="app">
+<div class="container">
+    <header>
+        <h1>🐾 Little Paw Tales</h1>
+        <p class="subtitle">Master Pro Prompt & Content Engine (Global Viral Edition)</p>
+    </header>
 
-<header class="header">
-
-  <div class="eyebrow">
-    Impossible Evidence™ — Adaptive Viral Lab
-  </div>
-
-  <div class="tape"></div>
-
-  <h1>10-Second Impossible Moment Engine</h1>
-
-  <p class="sub">
-    Enter a simple idea. The engine evaluates it, simplifies unnecessary complexity,
-    designs the 10-second visual structure and produces one production-ready Flow/Veo prompt.
-  </p>
-
-  <div class="meta">
-    <span>ENGINE <b>ADAPTIVE 2.0</b></span>
-    <span>RUNTIME <b>10 SEC</b></span>
-    <span>TARGET <b id="metaPlatform">Facebook Reels</b></span>
-  </div>
-
-</header>
-
-
-<!-- DISTRIBUTION -->
-
-<section class="section">
-
-  <div class="legend">
-    <span class="tag">A</span>
-    <span class="title">Distribution</span>
-  </div>
-
-  <div class="grid">
-
-    <div class="field">
-
-      <label>Platform</label>
-
-      <select id="platform">
-
-        <option value="facebook">Facebook Reels</option>
-        <option value="instagram">Instagram Reels</option>
-        <option value="tiktok">TikTok</option>
-        <option value="youtube">YouTube Shorts</option>
-
-      </select>
-
+    <div class="warning">
+        <strong>🔥 EXPERT BLUEPRINT:</strong> Always upload your locked <strong>Buddy</strong> and <strong>Mia</strong> reference images into Google Flow before executing generated prompts to maintain 100% visual consistency.
     </div>
 
-
-    <div class="field">
-
-      <label>Target audience</label>
-
-      <select id="target">
-
-        <option value="global">Global English-speaking</option>
-        <option value="us">United States</option>
-        <option value="uk">United Kingdom</option>
-        <option value="ca">Canada</option>
-        <option value="au">Australia</option>
-
-      </select>
-
-    </div>
-
-  </div>
-
-</section>
-
-
-<!-- CONCEPT -->
-
-<section class="section">
-
-  <div class="legend">
-    <span class="tag">B</span>
-    <span class="title">The Concept</span>
-  </div>
-
-
-  <div class="field">
-
-    <label>Who / What?</label>
-
-    <input
-      id="subject"
-      placeholder="A young man"
-    >
-
-  </div>
-
-
-  <div class="field">
-
-    <label>Where?</label>
-
-    <input
-      id="location"
-      placeholder="A modern city street"
-    >
-
-  </div>
-
-
-  <div class="field">
-
-    <label>What happens normally?</label>
-
-    <textarea
-      id="normal"
-      placeholder="He walks toward a parked bicycle."
-    ></textarea>
-
-    <p class="hint">
-      Start with something completely believable.
-    </p>
-
-  </div>
-
-
-  <div class="field">
-
-    <label>What is impossible?</label>
-
-    <textarea
-      id="impossible"
-      placeholder="The bicycle slowly rolls uphill by itself."
-    ></textarea>
-
-    <p class="hint">
-      ONE impossible visual. Don't explain why.
-    </p>
-
-  </div>
-
-
-  <div class="field">
-
-    <label>Human reaction</label>
-
-    <textarea
-      id="reaction"
-      placeholder="He stops, looks around, then cautiously follows it."
-    ></textarea>
-
-    <p class="hint">
-      A believable reaction makes the impossible moment feel real.
-    </p>
-
-  </div>
-
-</section>
-
-
-<!-- OPTIONAL CONTROL -->
-
-<section class="section">
-
-  <div class="legend">
-    <span class="tag">C</span>
-    <span class="title">Creative Control</span>
-  </div>
-
-
-  <div class="field">
-
-    <label>Visual style</label>
-
-    <select id="style">
-
-      <option value="photoreal">
-        Ultra-realistic live action
-      </option>
-
-      <option value="cinematic">
-        Premium cinematic realism
-      </option>
-
-      <option value="documentary">
-        Realistic handheld documentary
-      </option>
-
-      <option value="phone">
-        Realistic smartphone footage
-      </option>
-
-    </select>
-
-  </div>
-
-
-  <div class="field">
-
-    <label>Ending text</label>
-
-    <select id="ending">
-
-      <option value="none">No text inside video</option>
-
-      <option value="again">
-        WAIT… LOOK AGAIN.
-      </option>
-
-      <option value="see">
-        DID YOU SEE IT?
-      </option>
-
-      <option value="notice">
-        WHAT DID YOU NOTICE?
-      </option>
-
-    </select>
-
-    <p class="hint">
-      The engine keeps text OUT of the generated video unless you specifically choose it.
-    </p>
-
-  </div>
-
-</section>
-
-
-<button
-  class="primary"
-  id="generate"
->
-  Analyze + Build 10-Second Prompt
-</button>
-
-
-<button
-  class="secondary"
-  id="clear"
->
-  Clear & Start New Concept
-</button>
-
-
-<!-- SAVED CASES -->
-
-<section class="section">
-
-  <div class="legend">
-    <span class="tag">D</span>
-    <span class="title">Saved Cases</span>
-  </div>
-
-  <div class="saved-row">
-
-    <select id="savedSelect">
-
-      <option value="">
-        — select saved case —
-      </option>
-
-    </select>
-
-    <button class="small-btn" id="load">
-      Load
-    </button>
-
-    <button class="small-btn" id="delete">
-      Delete
-    </button>
-
-  </div>
-
-
-  <div class="saved-row">
-
-    <input
-      id="saveName"
-      placeholder="Case name"
-    >
-
-    <button class="small-btn" id="save">
-      Save
-    </button>
-
-  </div>
-
-  <div
-    class="status"
-    id="status"
-  ></div>
-
-</section>
-
-
-<!-- OUTPUT -->
-
-<section
-  class="output"
-  id="output"
-  hidden
->
-
-
-  <!-- SCORE -->
-
-  <div class="score-card">
-
-    <div class="score-flex">
-
-      <div>
-
-        <div class="score-label">
-          Adaptive Viral Potential
+    <div class="grid-2">
+        <div class="form-group">
+            <label for="platformSelect">📱 Target Platform</label>
+            <select id="platformSelect">
+                <option value="tiktok">TikTok (High Hook & Emotional Loop)</option>
+                <option value="instagram">Instagram Reels (Aesthetic & Visual Story)</option>
+                <option value="facebook" selected>Facebook Reels (Community & Heartwarming)</option>
+            </select>
         </div>
 
-        <div
-          class="score"
-          id="score"
-        >
-          0/10
+        <div class="form-group">
+            <label for="categorySelect">🎭 Story Category</label>
+            <select id="categorySelect" onchange="loadCategoryTopics()">
+                <option value="emotional">Emotional & Heartwarming</option>
+                <option value="sad">Sad & Deep Comfort</option>
+                <option value="friendship">Pure Friendship & Bonding</option>
+                <option value="love">Deep Love & Affection</option>
+                <option value="surprise">Surprise & Joy</option>
+                <option value="advice">Kindness & Moral Advice</option>
+                <option value="humor">Wholesome Cute Humor</option>
+            </select>
         </div>
-
-      </div>
-
-      <div
-        class="pill"
-        id="pattern"
-      >
-        PATTERN
-      </div>
-
     </div>
 
-    <div
-      class="verdict"
-      id="verdict"
-    ></div>
-
-  </div>
-
-
-  <!-- AUTO SIMPLIFIED IDEA -->
-
-  <div class="box">
-
-    <h3>
-      Engine Decision
-    </h3>
-
-    <ul id="decision"></ul>
-
-  </div>
-
-
-  <!-- PROMPT -->
-
-  <div class="prompt">
-
-    <div class="prompt-head">
-
-      <div class="prompt-title">
-        Final Flow / Veo Prompt
-      </div>
-
-      <div class="prompt-time">
-        ONE VIDEO · 10 SEC
-      </div>
-
+    <div class="form-group">
+        <label for="topicSelect">📚 Viral Story Select (Scroll to see hundreds of unique ideas)</label>
+        <div style="display: flex; gap: 10px;">
+            <select id="topicSelect" onchange="applySelectedTopic()" style="flex-grow: 1;">
+                <!-- Populated via Javascript -->
+            </select>
+            <button class="btn-copy" style="background-color: #38BDF8; color: #0F172A; min-width: 140px;" onclick="loadCategoryTopics()">🔄 Refresh List</button>
+        </div>
     </div>
 
-
-    <div
-      class="prompt-text"
-      id="finalPrompt"
-    ></div>
-
-
-    <button
-      class="copy"
-      data-target="finalPrompt"
-    >
-      Copy Prompt
-    </button>
-
-  </div>
-
-
-  <!-- TIMELINE -->
-
-  <div class="box">
-
-    <h3>
-      10-Second Visual Timeline
-    </h3>
-
-    <ul id="timeline"></ul>
-
-  </div>
-
-
-  <!-- POST PACKAGE -->
-
-  <div class="box">
-
-    <h3>
-      Facebook Posting Package
-    </h3>
-
-
-    <div class="field">
-
-      <label>Recommended hook / caption</label>
-
-      <textarea
-        id="caption"
-        class="output-text"
-        readonly
-      ></textarea>
-
-      <button
-        class="copy"
-        data-target="caption"
-      >
-        Copy Caption
-      </button>
-
+    <div class="form-group">
+        <label for="actionInput">🎬 Custom or Selected Shot Action</label>
+        <textarea id="actionInput" rows="3" placeholder="Describe the 10-second action sequence..."></textarea>
     </div>
 
-
-    <div class="field">
-
-      <label>Hashtags</label>
-
-      <textarea
-        id="hashtags"
-        class="output-text"
-        readonly
-      ></textarea>
-
-      <button
-        class="copy"
-        data-target="hashtags"
-      >
-        Copy Hashtags
-      </button>
-
+    <div class="form-group">
+        <label for="cameraInput">🎥 Camera Motion & Framing</label>
+        <select id="cameraInput">
+            <option value="Slow smooth cinematic push-in close up, focusing on deep emotional expressions">Slow smooth cinematic push-in close up (Emotional Focus)</option>
+            <option value="Subtle static locked-off shot with shallow depth of field, gentle emotional atmosphere">Static locked-off cinematic shot (Intimate Focus)</option>
+            <option value="Slow cinematic pan revealing the characters in golden sunlight, smooth motion">Slow cinematic pan revealing characters in golden hour</option>
+            <option value="Low angle tracking shot following Buddy's joyful movement">Low angle tracking shot following Buddy's movement</option>
+            <option value="Soft orbital tracking shot around Mia and Buddy sharing a quiet moment">Soft orbital tracking shot around characters</option>
+        </select>
     </div>
 
-  </div>
+    <button class="btn-primary" onclick="generateAllOutputs()" style="margin-bottom: 25px; font-size: 18px; padding: 20px;">🚀 GENERATE MASTER PROMPT & CONTENT</button>
 
+    <div class="output-section">
+        <div class="output-header">
+            <span class="output-title">🤖 1. Google Flow Master Video Prompt</span>
+            <button class="btn-copy" id="copyPromptBtn" onclick="copyContent('promptOutput', 'copyPromptBtn')">Copy Prompt</button>
+        </div>
+        <div id="promptOutput" class="output-box"></div>
+    </div>
 
-  <!-- GENERATION CHECK -->
+    <div class="output-section">
+        <div class="output-header">
+            <span class="output-title">📝 2. Master Platform Caption</span>
+            <button class="btn-copy" id="copyCaptionBtn" onclick="copyContent('captionOutput', 'copyCaptionBtn')">Copy Caption</button>
+        </div>
+        <div id="captionOutput" class="output-box"></div>
+    </div>
 
-  <div class="box">
-
-    <h3>
-      Before You Generate
-    </h3>
-
-    <ul id="check"></ul>
-
-  </div>
-
-</section>
-
+    <div class="output-section">
+        <div class="output-header">
+            <span class="output-title">🏷️ 3. Viral Hashtags Bank</span>
+            <button class="btn-copy" id="copyHashtagsBtn" onclick="copyContent('hashtagsOutput', 'copyHashtagsBtn')">Copy Hashtags</button>
+        </div>
+        <div id="hashtagsOutput" class="output-box"></div>
+    </div>
 </div>
 
-
 <script>
-
-/* =========================================================
-   PLATFORM ENGINE
-========================================================= */
-
-const PLATFORMS = {
-
-  facebook:{
-    label:"Facebook Reels",
-    safe:"Keep the key action in the central upper-middle area. Avoid placing critical details at the extreme bottom or right edge.",
-    tip:"The visual mystery must work even if the viewer initially has sound muted."
-  },
-
-  instagram:{
-    label:"Instagram Reels",
-    safe:"Keep the main action away from the lower interface area and right-side controls.",
-    tip:"Make the final frame clean enough to replay naturally."
-  },
-
-  tiktok:{
-    label:"TikTok",
-    safe:"Keep the subject and impossible event away from the right-side controls and lower caption zone.",
-    tip:"The visual hook should begin almost immediately."
-  },
-
-  youtube:{
-    label:"YouTube Shorts",
-    safe:"Keep important visual information away from the lower interaction area.",
-    tip:"A visually strong final frame can encourage replay."
-  }
-
-};
-
-
-/* =========================================================
-   PATTERN LIBRARY
-========================================================= */
-
-const PATTERNS = [
-
-  {
-    name:"REALITY GLITCH",
-    words:["mirror","reflection","shadow","duplicate","double","disappear","appear"],
-    rule:"Treat the anomaly as a single physical inconsistency in an otherwise normal world."
-  },
-
-  {
-    name:"IMPOSSIBLE PHYSICS",
-    words:["float","uphill","gravity","fall","water","fire","heavy","balance","air"],
-    rule:"Show a normal object behaving incorrectly while everything around it remains realistic."
-  },
-
-  {
-    name:"OBJECT ANOMALY",
-    words:["object","phone","glass","cup","chair","door","ball","coin","book","bag"],
-    rule:"Keep the object recognizable and make only one property behave impossibly."
-  },
-
-  {
-    name:"TIME GLITCH",
-    words:["time","clock","repeat","again","rewind","future","past"],
-    rule:"Use one visible repeated or impossible temporal action without changing the environment."
-  },
-
-  {
-    name:"SCALE ILLUSION",
-    words:["tiny","giant","huge","small","miniature","massive"],
-    rule:"Make scale the only impossible property and keep perspective physically believable."
-  },
-
-  {
-    name:"HUMAN REACTION",
-    words:["person","man","woman","child","worker","driver","walk"],
-    rule:"Prioritize a believable human reaction after a visually obvious impossible event."
-  }
-
-];
-
-
-/* =========================================================
-   DOM
-========================================================= */
-
-const el = {
-
-  platform:document.getElementById("platform"),
-  target:document.getElementById("target"),
-
-  subject:document.getElementById("subject"),
-  location:document.getElementById("location"),
-  normal:document.getElementById("normal"),
-  impossible:document.getElementById("impossible"),
-  reaction:document.getElementById("reaction"),
-
-  style:document.getElementById("style"),
-  ending:document.getElementById("ending"),
-
-  generate:document.getElementById("generate"),
-  clear:document.getElementById("clear"),
-
-  output:document.getElementById("output"),
-
-  score:document.getElementById("score"),
-  pattern:document.getElementById("pattern"),
-  verdict:document.getElementById("verdict"),
-
-  decision:document.getElementById("decision"),
-  timeline:document.getElementById("timeline"),
-  check:document.getElementById("check"),
-
-  finalPrompt:document.getElementById("finalPrompt"),
-
-  caption:document.getElementById("caption"),
-  hashtags:document.getElementById("hashtags"),
-
-  savedSelect:document.getElementById("savedSelect"),
-  saveName:document.getElementById("saveName"),
-  save:document.getElementById("save"),
-  load:document.getElementById("load"),
-  del:document.getElementById("delete"),
-  status:document.getElementById("status")
-
-};
-
-
-/* =========================================================
-   PLATFORM LABEL
-========================================================= */
-
-el.platform.addEventListener("change",()=>{
-
-  document.getElementById("metaPlatform").textContent =
-    PLATFORMS[el.platform.value].label;
-
-});
-
-
-/* =========================================================
-   HELPERS
-========================================================= */
-
-function clean(value){
-
-  return String(value || "")
-    .replace(/\s+/g," ")
-    .trim();
-
-}
-
-
-function sentence(value){
-
-  value=clean(value);
-
-  if(!value) return "";
-
-  return value.replace(/[.!?]+$/,"") + ".";
-
-}
-
-
-function cap(value){
-
-  value=clean(value);
-
-  if(!value) return "";
-
-  return value.charAt(0).toUpperCase()+value.slice(1);
-
-}
-
-
-function containsAny(text,words){
-
-  text=text.toLowerCase();
-
-  return words.some(word=>text.includes(word));
-
-}
-
-
-/* =========================================================
-   PATTERN DETECTOR
-========================================================= */
-
-function detectPattern(impossible,normal){
-
-  const combined =
-    `${impossible} ${normal}`;
-
-  for(const pattern of PATTERNS){
-
-    if(containsAny(combined,pattern.words)){
-
-      return pattern;
-
-    }
-
-  }
-
-  return {
-    name:"SINGLE IMPOSSIBLE EVENT",
-    rule:"Keep one clear physical anomaly and avoid adding additional mysteries."
-  };
-
-}
-
-
-/* =========================================================
-   COMPLEXITY ANALYZER
-========================================================= */
-
-function analyzeComplexity(){
-
-  const combined =
-    `${el.normal.value} ${el.impossible.value} ${el.reaction.value}`;
-
-  const words =
-    clean(combined)
-      .split(/\s+/)
-      .filter(Boolean)
-      .length;
-
-  let complexity="LOW";
-
-  if(words>55) complexity="MEDIUM";
-  if(words>90) complexity="HIGH";
-
-  return {
-    words,
-    complexity
-  };
-
-}
-
-
-/* =========================================================
-   VIRAL POTENTIAL SCORER
-========================================================= */
-
-function scoreConcept(){
-
-  let score=0;
-
-  const subject=clean(el.subject.value);
-  const location=clean(el.location.value);
-  const normal=clean(el.normal.value);
-  const impossible=clean(el.impossible.value);
-  const reaction=clean(el.reaction.value);
-
-  const impossibleWords =
-    impossible.split(/\s+/).filter(Boolean).length;
-
-
-  if(subject) score+=1;
-
-  if(location) score+=1;
-
-  if(normal) score+=1;
-
-  if(impossible) score+=2;
-
-  if(reaction) score+=1;
-
-
-  if(impossibleWords>=4 &&
-     impossibleWords<=30){
-
-    score+=1;
-
-  }
-
-
-  if(
-    containsAny(
-      impossible,
-      [
-        "float",
-        "uphill",
-        "shadow",
-        "reflection",
-        "duplicate",
-        "doesn't fall",
-        "does not fall",
-        "disappear",
-        "appear",
-        "impossible"
-      ]
-    )
-  ){
-
-    score+=1;
-
-  }
-
-
-  if(reaction.length>8){
-
-    score+=1;
-
-  }
-
-
-  if(
-    !containsAny(
-      impossible,
-      [
-        "then",
-        "after",
-        "while",
-        "and then",
-        "suddenly",
-        "another"
-      ]
-    )
-  ){
-
-    score+=1;
-
-  }
-
-
-  return Math.min(score,10);
-
-}
-
-
-/* =========================================================
-   AUTO SIMPLIFIER
-========================================================= */
-
-function simplify(){
-
-  let impossible =
-    sentence(el.impossible.value);
-
-  let normal =
-    sentence(el.normal.value);
-
-  let reaction =
-    sentence(el.reaction.value);
-
-
-  /*
-    The engine doesn't rewrite the user's idea aggressively.
-    It removes common multi-event instructions.
-  */
-
-  impossible =
-    impossible
-      .replace(/\s+and then\s+/gi,". ")
-      .replace(/\s+then\s+/gi,". ")
-      .replace(/\s+while\s+/gi,". ");
-
-
-  return {
-    normal,
-    impossible,
-    reaction
-  };
-
-}
-
-
-/* =========================================================
-   CAMERA DECISION
-========================================================= */
-
-function chooseCamera(pattern){
-
-  if(pattern.name==="REALITY GLITCH")
-    return "slow controlled lateral camera movement revealing the anomaly without cutting";
-
-  if(pattern.name==="IMPOSSIBLE PHYSICS")
-    return "stable medium shot with a subtle forward camera move so the physical anomaly stays visible";
-
-  if(pattern.name==="TIME GLITCH")
-    return "locked or very stable camera with minimal movement to make the repeated action unmistakable";
-
-  if(pattern.name==="SCALE ILLUSION")
-    return "slow cinematic push-in maintaining clear spatial reference for believable scale";
-
-  return "stable cinematic tracking shot with subtle natural movement";
-
-
-}
-
-
-/* =========================================================
-   PROMPT ENGINE
-========================================================= */
-
-function buildPrompt(data,pattern){
-
-  const platform =
-    PLATFORMS[el.platform.value];
-
-  const target =
-    el.target.options[
-      el.target.selectedIndex
-    ].text;
-
-  const style =
-    el.style.options[
-      el.style.selectedIndex
-    ].text;
-
-
-  let endingInstruction =
-    "End naturally immediately after the reaction. Do not explain the mystery.";
-
-  if(el.ending.value!=="none"){
-
-    const endingMap={
-
-      again:"WAIT… LOOK AGAIN.",
-
-      see:"DID YOU SEE IT?",
-
-      notice:"WHAT DID YOU NOTICE?"
-
+    // Massive Story Combinator Arrays (10x10x10 = 1000+ combinations per category)
+    const storyElements = {
+        emotional: {
+            hooks: [
+                "Mia is sitting on the sidewalk steps looking down sadly", "Mia is looking at an old photo album with a tear in her eye", "Mia is shivering slightly in the cool evening breeze", "Mia looks overwhelmed after dropping her ice cream", "Mia is sitting quietly by herself on a park bench", "Mia is gazing out the window at the setting sun", "Mia holds a broken toy in her hands", "Mia is sitting on the porch feeling a bit lonely", "Mia sighs heavily while drawing a picture", "Mia is resting her head on her knees"
+            ],
+            actions: [
+                "Buddy trots over with his favorite chew toy", "Buddy rests his paw softly on her hand", "Buddy snuggles close against her side", "Buddy shares his special dog biscuit", "Buddy looks up at her with deep empathetic eyes", "Buddy gently nudges her shoulder with his wet nose", "Buddy brings her a glowing firefly in a jar", "Buddy rests his chin softly on her lap", "Buddy wraps his small paws around her arm", "Buddy sits silently right beside her"
+            ],
+            payoffs: [
+                "placing it gently on her lap to cheer her up.", "wrapping her in comforting warmth.", "bringing an instant warm smile to her face.", "reminding her she is never alone.", "making her giggle through her tears.", "showing her the magic of pure loyalty.", "filling the quiet moment with love.", "acting as her tiny guardian angel.", "making the heavy feelings melt away.", "proving they are best friends forever."
+            ]
+        },
+        sad: {
+            hooks: [
+                "Heavy rain falls in Little Paw Town as Mia feels isolated", "A dark storm passes over while Mia hides under a blanket", "Mia feels lost sitting alone on the garden bench", "The neighborhood park is empty and quiet today", "Mia is crying softly over a scraped knee", "The sky is gray and Mia looks out feeling helpless", "Mia drops her favorite book in a muddy puddle", "The wind blows a chill as Mia hugs herself", "Mia is sitting in the shadows of the porch", "Tears fall slowly down Mia's cheeks"
+            ],
+            actions: [
+                "Buddy silently walks up and sits firmly beside her", "Buddy crawls under the blanket with a warm flashlight", "Buddy nudges her gently and whines softly", "Buddy brings her a beautiful fallen autumn leaf", "Buddy rests his heavy head on her knee", "Buddy licks away a tear from her cheek", "Buddy pulls her close with his tiny paws", "Buddy lies across her feet to keep them warm", "Buddy stares at her with deep, soulful, understanding eyes", "Buddy softly howls a tiny comforting tune"
+            ],
+            payoffs: [
+                "whispering quiet comfort through his presence.", "sharing the heavy silence together.", "providing unconditional pure love.", "staying by her side until the sun comes out.", "letting her know it's okay to be sad.", "bringing a tiny spark of light to the dark.", "protecting her heart from the cold.", "healing her sadness with a gentle touch.", "standing together against the storm.", "making her feel perfectly safe."
+            ]
+        },
+        friendship: {
+            hooks: [
+                "Mia and Buddy walk side by side down the stone pathway", "Mia gently brushes Buddy's fluffy golden fur", "Mia and Buddy share a moment of quiet understanding", "Mia reads an adventure book out loud", "Mia builds a small fort out of pillows", "Mia and Buddy are watching the clouds float by", "Mia is drawing a chalk heart on the sidewalk", "Mia and Buddy share a tasty afternoon snack", "Mia is tying a beautiful new ribbon on his collar", "Mia and Buddy are sitting by a small babbling brook"
+            ],
+            actions: [
+                "Buddy rests his chin on her lap listening intently", "Buddy wags his tail in perfect rhythm with her steps", "Buddy barks happily and licks her nose", "Buddy stands guard proudly like a tiny knight", "Buddy leans his weight softly against her leg", "Buddy copies her exact sitting posture", "Buddy gently rests his paw perfectly inside her hand", "Buddy twirls around excitedly in circles", "Buddy looks at her like she is his whole world", "Buddy softly rests his head against her shoulder"
+            ],
+            payoffs: [
+                "enjoying the golden hour glow.", "finding peace in each other's company.", "showing the beauty of true loyalty.", "creating a perfect childhood memory.", "proving they are best friends forever.", "celebrating their unbreakable bond.", "enjoying a magical, wholesome afternoon.", "speaking a silent language of friendship.", "radiating pure, innocent joy.", "making Little Paw Town feel like heaven."
+            ]
+        },
+        love: {
+            hooks: [
+                "Mia holds a small glowing lantern in the twilight", "Mia is gently kissing the top of Buddy's head", "Mia is weaving a beautiful flower crown", "The sun sets painting the sky pink as Mia smiles", "Mia holds Buddy tightly in a warm embrace", "Mia is whispering a secret into Buddy's floppy ear", "Mia traces a heart pattern on Buddy's fur", "Mia and Buddy are framed by a beautiful blooming archway", "Mia holds out her hand softly toward Buddy", "Mia gazes deeply into Buddy's warm brown eyes"
+            ],
+            actions: [
+                "Buddy looks back with eyes full of absolute devotion", "Buddy gently places the flower crown on his own head", "Buddy nuzzles his face deeply into her neck", "Buddy closes his eyes and leans into her touch", "Buddy gently licks her fingers one by one", "Buddy wraps his tiny paws around her wrist", "Buddy rests his warm heart against hers", "Buddy lets out a soft, contented sigh", "Buddy places his paw over his chest playfully", "Buddy beams a warm, heartwarming puppy smile"
+            ],
+            payoffs: [
+                "showing a love that needs no words.", "creating a bond that lasts a lifetime.", "illuminating the world with pure affection.", "sharing a moment of absolute perfection.", "proving a dog's love is the purest magic.", "filling the cool evening with immense warmth.", "beating with one connected heart.", "making the whole universe feel right.", "sparking a feeling of deep, eternal love.", "capturing the essence of Little Paw Tales."
+            ]
+        },
+        surprise: {
+            hooks: [
+                "Buddy digs up a gorgeous blooming yellow daisy", "Mia hides behind a wooden fence post and jumps out", "A bright blue butterfly lands softly on Buddy's black nose", "Buddy finds a tiny wrapped box on the doorstep", "Mia pours fresh clean water into a little ceramic bowl", "Buddy spots a tiny green frog on a lilypad", "Mia blows shimmering soap bubbles into the air", "Buddy accidentally uncovers a hidden glowing stone", "Mia opens a magical pop-up storybook", "A gentle breeze blows a flurry of cherry blossoms"
+            ],
+            actions: [
+                "Buddy freezes in wonder with wide eyes", "Buddy does a funny little puppy hop of pure excitement", "Buddy gently pushes it toward Mia with his nose", "Buddy splashes his paw playfully, causing a splash", "Buddy tilts his head completely sideways in confusion", "Buddy chases the bubbles with joyful leaps", "Buddy gently catches a blossom on his tongue", "Buddy looks back and forth between Mia and the surprise", "Buddy lets out a tiny, high-pitched excited bark", "Buddy wiggles his whole body with happiness"
+            ],
+            payoffs: [
+                "while Mia giggles quietly.", "creating a delightful surprise moment.", "bringing a spark of magic to the day.", "discovering the wonders of Little Paw Town.", "sharing a perfectly unexpected joy.", "making Mia laugh uncontrollably.", "lighting up the afternoon with fun.", "showing the beauty of small surprises.", "turning an ordinary day into an adventure.", "capturing a perfectly wholesome memory."
+            ]
+        },
+        advice: {
+            hooks: [
+                "Buddy gently nudges Mia's hand away from a thorny bush", "Mia shares half of her soft pretzel with Buddy", "Buddy stops to comfort a lonely stray kitten", "Mia helps Buddy untangle his leash from a post", "Buddy sits upright and alert, guarding Mia's bag", "Mia carefully bandages a small scratch on Buddy's paw", "Buddy leads Mia away from a deep muddy puddle", "Mia patiently teaches Buddy how to wait", "Buddy waits faithfully at the crosswalk", "Mia gently helps a small bird back into its nest"
+            ],
+            actions: [
+                "teaching her caution with a wise canine gaze", "demonstrating the beauty of true sharing", "inspiring Mia to open her heart", "showing patience and steadfast loyalty", "proving that small acts make a big difference", "looking at her with deep trust and gratitude", "guiding her with protective instincts", "learning the value of gentle patience", "showing that rules keep us safe", "sharing a moment of pure empathy"
+            ],
+            payoffs: [
+                "in everyday life.", "with unconditional kindness.", "through their special bond.", "in the heart of Little Paw Town.", "reminding everyone to be kind.", "learning life's little lessons together.", "growing wiser side by side.", "teaching us how to love.", "with a gentle and pure spirit.", "making the world a better place."
+            ]
+        },
+        humor: {
+            hooks: [
+                "Buddy gets his head playfully stuck inside a flower pot", "Buddy chases his own fluffy tail in frantic circles", "Mia tries to teach Buddy how to sit on command", "Buddy spots his own reflection in a shiny puddle", "Buddy yawns a huge dramatic puppy yawn", "Buddy tries to carry a stick that is way too big", "Buddy gets scared by his own tiny shadow", "Buddy is dreaming and running in his sleep", "Mia accidentally drops a single piece of popcorn", "Buddy wears a pair of oversized sunglasses"
+            ],
+            actions: [
+                "wiggling his tail while Mia laughs heartily", "until he gets dizzy and flops down with a funny grin", "instead, Buddy gives her a high-five paw tap", "and tilts his head sideways with complete confusion", "right as Mia is trying to take a serious photo", "wobbling back and forth comically", "jumping straight up into the air", "making funny little squeaking noises", "Buddy dives for it like an action hero", "striking a hilarious superstar pose"
+            ],
+            payoffs: [
+                "bringing pure comedic joy.", "making it impossible not to smile.", "showing his goofy, lovable personality.", "creating a perfectly funny memory.", "causing Mia to burst into laughter.", "being the cutest clown in town.", "proving dogs are the best medicine.", "sharing a wholesome, funny moment.", "making the day instantly brighter.", "adding a splash of fun to Little Paw Town."
+            ]
+        }
     };
 
-    endingInstruction =
-      `The generated video must contain no text. Add the short text overlay "${endingMap[el.ending.value]}" later during editing if desired.`;
-
-  }
-
-
-  return `Create a single continuous 10-second vertical 9:16 short-form video for ${platform.label}, intended for a ${target} audience.
-
-CORE VISUAL IDEA:
-${cap(el.subject.value)} is in ${clean(el.location.value)}.
-
-NORMAL REALITY:
-${data.normal}
-
-ONE IMPOSSIBLE EVENT:
-${data.impossible}
-
-HUMAN PAYOFF:
-${data.reaction}
-
-TIMING:
-0.0–2.0s — Establish the normal situation immediately. The viewer should understand who and where they are without exposition.
-
-2.0–5.0s — The single impossible event begins naturally and becomes clearly visible.
-
-5.0–7.5s — HOLD THE ANOMALY. Keep the impossible event visible long enough for the viewer to recognize that something is wrong. Do not introduce another impossible event.
-
-7.5–10.0s — Show the natural human reaction:
-${data.reaction}
-
-CAMERA:
-Use ${chooseCamera(pattern)}.
-
-STYLE:
-${style}. Photorealistic live-action appearance, realistic skin, realistic materials, realistic depth, natural motion blur and believable environmental detail.
-
-CONTINUITY:
-One location, one time of day, consistent wardrobe, consistent subject identity, consistent objects, consistent lighting and consistent camera logic for the entire 10 seconds.
-
-PHYSICAL REALISM:
-Everything must obey real-world physics except the ONE deliberate impossible event described above. Shadows, reflections, contact, perspective and object interaction must remain realistic.
-
-VISUAL CLARITY:
-The impossible event must remain visible in the frame. Do not hide it behind people, objects, camera movement or darkness. Do not make the anomaly subtle enough to become ambiguous.
-
-PERFORMANCE:
-Human movement must be natural and restrained. The reaction should feel spontaneous rather than theatrical.
-
-AUDIO:
-Natural location ambience only. No background music. No narration. No artificial sound effects unless naturally produced by the visible action.
-
-TEXT:
-No captions, subtitles, logos, UI elements or watermarks inside the generated video.
-
-COMPOSITION:
-Vertical 9:16. Keep the subject and the impossible event in the central safe viewing area. ${platform.safe}
-
-NEGATIVE CONSTRAINTS:
-No scene changes.
-No cuts.
-No extra characters.
-No duplicate people.
-No duplicate objects.
-No morphing.
-No teleportation.
-No disappearing objects unless explicitly required by the ONE impossible event.
-No changing face.
-No changing clothing.
-No changing environment.
-No warped hands.
-No distorted anatomy.
-No random camera jumps.
-No CGI appearance.
-No cartoon appearance.
-No excessive slow motion.
-No unexplained secondary supernatural events.
-
-ENDING:
-${endingInstruction}
-
-FINAL DIRECTIVE:
-The viewer should be able to understand the impossible moment visually without narration, while still feeling that the event has not been completely explained. Prioritize realism, clarity and one strong curiosity trigger over complexity.`;
-
-
-}
-
-
-/* =========================================================
-   CAPTION ENGINE
-========================================================= */
-
-function buildCaption(pattern){
-
-  const impossible =
-    clean(el.impossible.value);
-
-  const short =
-    impossible
-      .replace(/[.!?]+$/,"")
-      .slice(0,90);
-
-  const templates=[
-
-    `Something about this doesn't make sense… 👀`,
-
-    `I watched this twice before I noticed it.`,
-
-    `Wait… how is that even possible?`,
-
-    `Everything looks normal… until you notice THIS.`
-
-  ];
-
-  let index=0;
-
-  if(pattern.name==="REALITY GLITCH") index=1;
-
-  if(pattern.name==="IMPOSSIBLE PHYSICS") index=2;
-
-  if(pattern.name==="OBJECT ANOMALY") index=0;
-
-  return `${templates[index]}\n\n${short}.\n\nDid you catch it?`;
-
-}
-
-
-/* =========================================================
-   HASHTAG ENGINE
-========================================================= */
-
-function buildHashtags(pattern){
-
-  const base=[
-    "#Impossible",
-    "#MindBlown",
-    "#WaitForIt",
-    "#DidYouSeeIt",
-    "#WatchAgain",
-    "#Unexpected",
-    "#ViralReels"
-  ];
-
-  const map={
-
-    "REALITY GLITCH":[
-      "#RealityGlitch",
-      "#GlitchInTheMatrix"
-    ],
-
-    "IMPOSSIBLE PHYSICS":[
-      "#ImpossiblePhysics",
-      "#Physics"
-    ],
-
-    "OBJECT ANOMALY":[
-      "#ImpossibleMoment",
-      "#OddlySatisfying"
-    ],
-
-    "TIME GLITCH":[
-      "#TimeGlitch",
-      "#Mystery"
-    ],
-
-    "SCALE ILLUSION":[
-      "#Perspective",
-      "#OpticalIllusion"
-    ]
-
-  };
-
-  return [
-    ...base,
-    ...(map[pattern.name] || ["#Mystery"])
-  ].join(" ");
-
-}
-
-
-/* =========================================================
-   GENERATION
-========================================================= */
-
-el.generate.addEventListener("click",()=>{
-
-  const required=[
-
-    el.subject,
-    el.location,
-    el.normal,
-    el.impossible,
-    el.reaction
-
-  ];
-
-  let firstInvalid=null;
-
-
-  required.forEach(input=>{
-
-    if(!clean(input.value)){
-
-      input.style.borderColor="var(--red)";
-
-      if(!firstInvalid)
-        firstInvalid=input;
-
-    }else{
-
-      input.style.borderColor="var(--line)";
-
+    const actionInput = document.getElementById('actionInput');
+    const categorySelect = document.getElementById('categorySelect');
+    const topicSelect = document.getElementById('topicSelect');
+    const platformSelect = document.getElementById('platformSelect');
+    const cameraInput = document.getElementById('cameraInput');
+
+    // Unicode converter for beautiful fonts
+    function toBeautifulFont(str) {
+        const chars = {
+            'a':'𝓪','b':'𝓫','c':'𝓬','d':'𝓭','e':'𝓮','f':'𝓯','g':'𝓰','h':'𝓱','i':'𝓲','j':'𝓳','k':'𝓴','l':'𝓵','m':'𝓶','n':'𝓷','o':'𝓸','p':'𝓹','q':'𝓺','r':'𝓻','s':'𝓼','t':'𝓽','u':'𝓾','v':'𝓿','w':'𝔀','x':'𝔁','y':'𝔂','z':'𝔃',
+            'A':'𝓐','B':'𝓑','C':'𝓒','D':'𝓓','E':'𝓔','F':'𝓕','G':'𝓖','H':'𝓗','I':'𝓘','J':'𝓙','K':'𝓚','L':'𝓛','M':'𝓜','N':'𝓝','O':'𝓞','P':'𝓟','Q':'𝓠','R':'𝓡','S':'𝓢','T':'𝓣','U':'𝓤','V':'𝓥','W':'𝓦','X':'𝓧','Y':'𝓨','Z':'𝓩'
+        };
+        return str.split('').map(c => chars[c] || c).join('');
     }
 
-  });
-
-
-  if(firstInvalid){
-
-    firstInvalid.focus();
-
-    return;
-
-  }
-
-
-  const pattern =
-    detectPattern(
-      el.impossible.value,
-      el.normal.value
-    );
-
-
-  const complexity =
-    analyzeComplexity();
-
-
-  const data =
-    simplify();
-
-
-  let score =
-    scoreConcept();
-
-
-  /*
-    Adaptive scoring.
-    High complexity slightly reduces the score because
-    10 seconds is extremely short.
-  */
-
-  if(complexity.complexity==="MEDIUM")
-    score=Math.max(1,score-1);
-
-  if(complexity.complexity==="HIGH")
-    score=Math.max(1,score-2);
-
-
-  el.score.textContent =
-    `${score}/10`;
-
-  el.pattern.textContent =
-    pattern.name;
-
-
-  if(score>=9){
-
-    el.verdict.innerHTML =
-      `<span class="good">STRONG CONCEPT.</span> `
-      + `Clear visual anomaly, simple structure and good short-form potential.`;
-
-  }else if(score>=7){
-
-    el.verdict.innerHTML =
-      `<span class="good">USABLE CONCEPT.</span> `
-      + `The idea works, but generation should remain extremely simple.`;
-
-  }else{
-
-    el.verdict.innerHTML =
-      `<span class="bad">NEEDS SIMPLIFICATION.</span> `
-      + `The engine will keep the core idea but reduce unnecessary complexity.`;
-
-  }
-
-
-  /* DECISION */
-
-  el.decision.innerHTML="";
-
-  [
-
-    `Detected pattern: ${pattern.name}.`,
-
-    `Complexity level: ${complexity.complexity}.`,
-
-    `Engine rule: ${pattern.rule}`,
-
-    `One impossible event is enforced.`,
-
-    `One continuous 10-second shot is enforced.`,
-
-    `No explanatory text is required inside the generated video.`
-
-  ].forEach(text=>{
-
-    const li=document.createElement("li");
-
-    li.textContent=text;
-
-    el.decision.appendChild(li);
-
-  });
-
-
-  /* PROMPT */
-
-  el.finalPrompt.textContent =
-    buildPrompt(data,pattern);
-
-
-  /* TIMELINE */
-
-  el.timeline.innerHTML="";
-
-  [
-
-    "00.0–02.0 → Establish normal reality.",
-
-    "02.0–05.0 → Impossible event begins.",
-
-    "05.0–07.5 → Hold and clearly prove the anomaly.",
-
-    "07.5–10.0 → Human reaction / payoff.",
-
-    "10.0 → Cut before explaining everything."
-
-  ].forEach(text=>{
-
-    const li=document.createElement("li");
-
-    li.textContent=text;
-
-    el.timeline.appendChild(li);
-
-  });
-
-
-  /* POST */
-
-  el.caption.value =
-    buildCaption(pattern);
-
-  el.hashtags.value =
-    buildHashtags(pattern);
-
-
-  /* CHECKLIST */
-
-  el.check.innerHTML="";
-
-  [
-
-    "Generate ONE 10-second video — do not split this concept into two clips.",
-
-    "Use 9:16 vertical format.",
-
-    "Check the first 2 seconds: the viewer must immediately understand the situation.",
-
-    "Check the impossible event: it must remain visible and understandable.",
-
-    "Check the final reaction: natural, not exaggerated.",
-
-    "If the generated result contains morphing or duplicate objects, regenerate rather than trying to repair a broken shot.",
-
-    `For ${PLATFORMS[el.platform.value].label}: ${PLATFORMS[el.platform.value].tip}`,
-
-    "Add final text in the editor only if needed."
-
-  ].forEach(text=>{
-
-    const li=document.createElement("li");
-
-    li.textContent=text;
-
-    el.check.appendChild(li);
-
-  });
-
-
-  el.output.hidden=false;
-
-  el.output.scrollIntoView({
-    behavior:"smooth",
-    block:"start"
-  });
-
-});
-
-
-/* =========================================================
-   CLEAR
-========================================================= */
-
-el.clear.addEventListener("click",()=>{
-
-  [
-
-    el.subject,
-    el.location,
-    el.normal,
-    el.impossible,
-    el.reaction
-
-  ].forEach(input=>{
-
-    input.value="";
-
-    input.style.borderColor="var(--line)";
-
-  });
-
-
-  el.output.hidden=true;
-
-});
-
-
-/* =========================================================
-   COPY SYSTEM
-========================================================= */
-
-document.querySelectorAll(".copy").forEach(button=>{
-
-  button.addEventListener("click",async()=>{
-
-    const target =
-      document.getElementById(
-        button.dataset.target
-      );
-
-    const text =
-      target.value !== undefined
-        ? target.value
-        : target.textContent;
-
-
-    try{
-
-      await navigator.clipboard.writeText(text);
-
-      button.textContent="Copied ✓";
-
-      button.classList.add("done");
-
-      setTimeout(()=>{
-
-        button.textContent =
-          button.dataset.target==="finalPrompt"
-            ? "Copy Prompt"
-            : button.dataset.target==="caption"
-              ? "Copy Caption"
-              : "Copy Hashtags";
-
-        button.classList.remove("done");
-
-      },1400);
-
-    }catch(e){
-
-      const area=document.createElement("textarea");
-
-      area.value=text;
-
-      document.body.appendChild(area);
-
-      area.select();
-
-      document.execCommand("copy");
-
-      document.body.removeChild(area);
-
-      button.textContent="Copied ✓";
-
-      setTimeout(()=>{
-
-        button.textContent =
-          button.dataset.target==="finalPrompt"
-            ? "Copy Prompt"
-            : button.dataset.target==="caption"
-              ? "Copy Caption"
-              : "Copy Hashtags";
-
-      },1400);
-
+    function loadCategoryTopics() {
+        const cat = categorySelect.value;
+        const elements = storyElements[cat] || storyElements['emotional'];
+        
+        topicSelect.innerHTML = '';
+        
+        // Generate 150 random combinations for the dropdown to simulate massive variety
+        for(let i = 0; i < 150; i++) {
+            const hook = elements.hooks[Math.floor(Math.random() * elements.hooks.length)];
+            const action = elements.actions[Math.floor(Math.random() * elements.actions.length)];
+            const payoff = elements.payoffs[Math.floor(Math.random() * elements.payoffs.length)];
+            
+            const generatedStory = `${hook}; ${action}, ${payoff}`;
+            
+            const opt = document.createElement('option');
+            opt.value = generatedStory;
+            opt.text = `Idea #${i + 1}: ${generatedStory.substring(0, 80)}...`;
+            topicSelect.appendChild(opt);
+        }
+        applySelectedTopic();
     }
 
-  });
-
-});
-
-
-/* =========================================================
-   SAVED CASE ENGINE
-========================================================= */
-
-const STORAGE_KEY =
-  "impossible_adaptive_cases_v2";
-
-
-function getCases(){
-
-  try{
-
-    return JSON.parse(
-      localStorage.getItem(STORAGE_KEY)
-    ) || {};
-
-  }catch(e){
-
-    return {};
-
-  }
-
-}
-
-
-function setCases(data){
-
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(data)
-  );
-
-}
-
-
-function slug(name){
-
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9]+/g,"-")
-    .replace(/^-+|-+$/g,"")
-    .slice(0,55)
-    || "case";
-
-}
-
-
-function collect(){
-
-  return {
-
-    platform:el.platform.value,
-    target:el.target.value,
-
-    subject:el.subject.value,
-    location:el.location.value,
-    normal:el.normal.value,
-    impossible:el.impossible.value,
-    reaction:el.reaction.value,
-
-    style:el.style.value,
-    ending:el.ending.value
-
-  };
-
-}
-
-
-function apply(data){
-
-  el.platform.value =
-    data.platform || "facebook";
-
-  el.target.value =
-    data.target || "global";
-
-  el.subject.value =
-    data.subject || "";
-
-  el.location.value =
-    data.location || "";
-
-  el.normal.value =
-    data.normal || "";
-
-  el.impossible.value =
-    data.impossible || "";
-
-  el.reaction.value =
-    data.reaction || "";
-
-  el.style.value =
-    data.style || "photoreal";
-
-  el.ending.value =
-    data.ending || "none";
-
-
-  document.getElementById(
-    "metaPlatform"
-  ).textContent =
-    PLATFORMS[
-      el.platform.value
-    ].label;
-
-
-  el.output.hidden=true;
-
-}
-
-
-/* =========================================================
-   REFRESH SAVED
-========================================================= */
-
-function refreshCases(){
-
-  const cases=getCases();
-
-  el.savedSelect.innerHTML =
-    `<option value="">— select saved case —</option>`;
-
-
-  Object.keys(cases)
-    .sort((a,b)=>
-      cases[b].savedAt -
-      cases[a].savedAt
-    )
-    .forEach(key=>{
-
-      const option =
-        document.createElement("option");
-
-      option.value=key;
-
-      option.textContent =
-        cases[key].name;
-
-      el.savedSelect.appendChild(option);
-
-    });
-
-}
-
-
-el.save.addEventListener("click",()=>{
-
-  const name =
-    clean(el.saveName.value) ||
-    clean(el.subject.value);
-
-
-  if(!name){
-
-    setStatus(
-      "Give the case a name first.",
-      true
-    );
-
-    return;
-
-  }
-
-
-  const cases=getCases();
-
-  const key=slug(name);
-
-
-  cases[key]={
-
-    name:name,
-
-    savedAt:Date.now(),
-
-    data:collect()
-
-  };
-
-
-  setCases(cases);
-
-  refreshCases();
-
-  el.savedSelect.value=key;
-
-  el.saveName.value="";
-
-  setStatus("Saved ✓");
-
-});
-
-
-el.load.addEventListener("click",()=>{
-
-  const key =
-    el.savedSelect.value;
-
-
-  if(!key){
-
-    setStatus(
-      "Select a saved case first.",
-      true
-    );
-
-    return;
-
-  }
-
-
-  const cases=getCases();
-
-  if(!cases[key]){
-
-    setStatus(
-      "Saved case not found.",
-      true
-    );
-
-    return;
-
-  }
-
-
-  apply(cases[key].data);
-
-  setStatus("Loaded ✓");
-
-});
-
-
-el.del.addEventListener("click",()=>{
-
-  const key =
-    el.savedSelect.value;
-
-
-  if(!key){
-
-    setStatus(
-      "Select a saved case first.",
-      true
-    );
-
-    return;
-
-  }
-
-
-  const cases=getCases();
-
-  const name =
-    cases[key]?.name || "this case";
-
-
-  if(!confirm(
-    `Delete "${name}"?`
-  )) return;
-
-
-  delete cases[key];
-
-  setCases(cases);
-
-  refreshCases();
-
-  setStatus("Deleted ✓");
-
-});
-
-
-function setStatus(message,error=false){
-
-  el.status.textContent=message;
-
-  el.status.style.color =
-    error
-      ? "var(--red)"
-      : "var(--yellow)";
-
-  setTimeout(()=>{
-
-    el.status.textContent="";
-
-  },2500);
-
-}
-
-
-refreshCases();
-
+    function applySelectedTopic() {
+        if (topicSelect.value) {
+            actionInput.value = topicSelect.value;
+        }
+    }
+
+    function generateAllOutputs() {
+        const action = actionInput.value.trim() || "Mia and Buddy share a touching moment together under the golden hour sunlight in Little Paw Town.";
+        const camera = cameraInput.value;
+        const platform = platformSelect.value;
+
+        // 1. Prompt Generation (Watermark built-in)
+        const promptText = `Premium cinematic 3D storybook animation, Unreal Engine 5 render style, 8K ultra-high resolution, masterpiece. USE ATTACHED REFERENCE IMAGES FOR CHARACTER CONSISTENCY. CHARACTER 1: Buddy, a small adorable golden-brown puppy with soft fluffy realistic fur, floppy ears, large expressive warm brown canine eyes, a black dog nose, a real canine muzzle, wearing a tiny elegant blue collar. CHARACTER 2: Mia, a 6-year-old girl with warm brown wavy hair, expressive kind eyes, wearing a simple tasteful pastel lavender dress and a cream cardigan. ACTION: ${action}. ENVIRONMENT: Little Paw Town, a beautiful cozy American-style small town, quiet sidewalk. LIGHTING & VIBE: Emotional, highly detailed, soft volumetric golden hour sunlight, subtle warm glow, cinematic shallow depth of field. BRANDING: Include a subtle, elegant, small watermark text "Little Paw Tales" in the bottom right corner. CAMERA MOVEMENT: ${camera}. Vertical 9:16 aspect ratio.`;
+        document.getElementById('promptOutput').innerText = promptText;
+
+        // Extract a short summary for the caption
+        let shortSummary = action.split(';')[0]; // Grabs the hook
+        if(!shortSummary) shortSummary = action;
+        let beautifulSummary = toBeautifulFont(shortSummary + "...");
+
+        // 2. Caption Generation based on Platform + Beautiful Mini-Story
+        let captionText = "";
+        if (platform === 'tiktok') {
+            captionText = `✨ 𝓣𝓱𝓮 𝓢𝓽𝓸𝓻𝔂 ✨\n🐾 ${beautifulSummary}\n\nSometimes all you need is a loyal friend by your side. Watch how Buddy makes Mia's day instantly brighter in Little Paw Town. ❤️\n\nDrop a ❤️ if this made you smile today!`;
+        } else if (platform === 'instagram') {
+            captionText = `✨ 𝓣𝓱𝓮 𝓢𝓽𝓸𝓻𝔂 ✨\n🌸 ${beautifulSummary}\n\nTiny paws. Big feelings. Every corner of Little Paw Town holds a quiet moment of pure friendship. Let Buddy and Mia remind you of the magic in small acts of love. 🐶 \n\nSave this reel when you need a little comfort today. 💌`;
+        } else {
+            captionText = `✨ 𝓣𝓱𝓮 𝓢𝓽𝓸𝓻𝔂 ✨\n📖 ${beautifulSummary}\n\nWelcome to Little Paw Town! When words aren't enough, a faithful friend like Buddy knows exactly how to heal a heavy heart. Join Mia and Buddy on their heartwarming journey.\n\nLike and Follow for daily emotional stories! ❤️🐾`;
+        }
+        document.getElementById('captionOutput').innerText = captionText;
+
+        // 3. Targeted Hashtags Generation based on Category
+        let baseHashtags = `#LittlePawTales #PuppyLove #WholesomeStories #EmotionalShorts #DogLovers #CutePuppy #FriendshipGoals #LittlePawTown`;
+        const cat = categorySelect.value;
+        if(cat === 'emotional' || cat === 'sad' || cat === 'love') baseHashtags += ` #Heartwarming #ReelsFeelss #EmotionalJourney #UnconditionalLove`;
+        if(cat === 'humor' || cat === 'surprise') baseHashtags += ` #FunnyDogs #CutePets #JoyfulMoments #PuppyPlaytime`;
+        if(cat === 'advice' || cat === 'friendship') baseHashtags += ` #LifeLessons #BestFriends #KindnessMatters #Loyalty`;
+        
+        document.getElementById('hashtagsOutput').innerText = baseHashtags;
+    }
+
+    function copyContent(elementId, btnId) {
+        const text = document.getElementById(elementId).innerText;
+        const btn = document.getElementById(btnId);
+        
+        try {
+            navigator.clipboard.writeText(text).then(() => {
+                showSuccessState(btn);
+            }).catch(err => {
+                fallbackCopy(text, btn);
+            });
+        } catch(e) {
+            fallbackCopy(text, btn);
+        }
+    }
+
+    function fallbackCopy(text, btn) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+            document.execCommand('copy');
+            showSuccessState(btn);
+        } catch (err) {
+            console.error('Copy failed', err);
+        }
+        document.body.removeChild(textArea);
+    }
+
+    function showSuccessState(btn) {
+        const originalText = btn.innerText;
+        btn.innerText = "✅ Copied!";
+        btn.classList.add('success');
+        setTimeout(() => {
+            btn.innerText = originalText;
+            btn.classList.remove('success');
+        }, 2000);
+    }
+
+    // Initialize on load
+    loadCategoryTopics();
 </script>
 
 </body>
