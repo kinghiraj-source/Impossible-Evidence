@@ -254,6 +254,14 @@
         </div>
         <div id="hashtagsOutput" class="output-box"></div>
     </div>
+
+    <div class="output-section">
+        <div class="output-header">
+            <span class="output-title">🎤 4. 10-Second On-Screen Rhythm / Voiceover Script</span>
+            <button class="btn-copy" id="copyPoemBtn" onclick="copyContent('poemOutput', 'copyPoemBtn')">Copy Script</button>
+        </div>
+        <div id="poemOutput" class="output-box" style="font-size: 14px; text-align: left; line-height: 1.8;"></div>
+    </div>
 </div>
 
 <script>
@@ -338,6 +346,38 @@
         }
     };
 
+    // Pro 10-Second Rhythmic Pacing Scripts for Reels/TikToks
+    const rhythmicVoiceovers = {
+        emotional: [
+            { line1: "When words aren't enough...", line3: "A gentle friend changes everything. ❤️" },
+            { line1: "Some days feel a little heavy...", line3: "But love always finds a way to lighten the load. 🐾" }
+        ],
+        sad: [
+            { line1: "Even on the darkest days...", line3: "You never have to face the storm alone. ✨" },
+            { line1: "Tears may fall sometimes...", line3: "But true comfort is always right beside you. 🌧️" }
+        ],
+        friendship: [
+            { line1: "Side by side...", line3: "The best adventures are the ones we share. 🌟" },
+            { line1: "Tiny steps, big journeys...", line3: "Best friends forever in Little Paw Town. 🐾" }
+        ],
+        love: [
+            { line1: "Some souls just know...", line3: "Exactly how to bring warmth to your heart. 🌅" },
+            { line1: "A simple look...", line3: "A love that needs absolutely no words. ❤️" }
+        ],
+        surprise: [
+            { line1: "The very best moments...", line3: "Are the ones you never see coming! 🦋" },
+            { line1: "Look closely...", line3: "There is magic hiding in every single day. ✨" }
+        ],
+        advice: [
+            { line1: "Small acts of kindness...", line3: "Create ripples that change the whole world. 🌍" },
+            { line1: "Patience and love...", line3: "Are the greatest lessons we can ever learn. 📖" }
+        ],
+        humor: [
+            { line1: "Life is just too short...", line3: "Not to laugh at the silly things! 😂" },
+            { line1: "Pure chaos...", line3: "But we wouldn't have it any other way! 🐶" }
+        ]
+    };
+
     const actionInput = document.getElementById('actionInput');
     const categorySelect = document.getElementById('categorySelect');
     const topicSelect = document.getElementById('topicSelect');
@@ -414,6 +454,24 @@
         if(cat === 'advice' || cat === 'friendship') baseHashtags += ` #LifeLessons #BestFriends #KindnessMatters #Loyalty`;
         
         document.getElementById('hashtagsOutput').innerText = baseHashtags;
+
+        // 4. 10-Second Rhythmic On-Screen Script Generation
+        const categoryScripts = rhythmicVoiceovers[cat] || rhythmicVoiceovers['emotional'];
+        const randomScript = categoryScripts[Math.floor(Math.random() * categoryScripts.length)];
+        
+        // Clean up the hook summary to fit beautifully in the script
+        let cleanHook = shortSummary.trim();
+        if (cleanHook.endsWith(';') || cleanHook.endsWith(',')) {
+            cleanHook = cleanHook.slice(0, -1);
+        }
+        cleanHook = cleanHook.charAt(0).toLowerCase() + cleanHook.slice(1);
+
+        const rhythmText = 
+            `⏱️ [0:00 - 0:03] ON-SCREEN TEXT:\n"${randomScript.line1}"\n\n` +
+            `⏱️ [0:04 - 0:06] VISUAL BEAT (No text, just emotion):\n( ${cleanHook}... )\n\n` +
+            `⏱️ [0:07 - 0:10] ON-SCREEN TEXT:\n"${randomScript.line3}"`;
+
+        document.getElementById('poemOutput').innerText = rhythmText;
     }
 
     function copyContent(elementId, btnId) {
