@@ -15,6 +15,7 @@
             --text: #F8FAFC;
             --text-muted: #94A3B8;
             --accent: #38BDF8;
+            --success: #10B981;
         }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -56,8 +57,13 @@
             grid-template-columns: 1fr 1fr;
             gap: 20px;
         }
+        .grid-3 {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+        }
         @media (max-width: 768px) {
-            .grid-2 {
+            .grid-2, .grid-3 {
                 grid-template-columns: 1fr;
             }
         }
@@ -99,6 +105,71 @@
             border-radius: 4px;
             line-height: 1.5;
         }
+        .info-box {
+            background-color: rgba(56, 189, 248, 0.08);
+            border-left: 4px solid var(--accent);
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #BAE6FD;
+            border-radius: 4px;
+            line-height: 1.5;
+        }
+        /* Toggle Switch CSS */
+        .switch-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #0B0F19;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 1px solid var(--card-border);
+        }
+        .switch-label {
+            font-size: 14px;
+            color: #E2E8F0;
+            font-weight: 600;
+            margin: 0;
+            text-transform: none;
+        }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #374151;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        input:checked + .slider {
+            background-color: var(--primary);
+        }
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        /* Outputs */
         .output-section {
             background-color: #0B0F19;
             border: 1px solid var(--card-border);
@@ -128,8 +199,24 @@
             padding: 14px;
             border-radius: 6px;
             border: 1px dashed #374151;
-            max-height: 180px;
+            max-height: 250px;
             overflow-y: auto;
+            margin-bottom: 10px;
+        }
+        .shot-container {
+            border-left: 3px solid var(--secondary);
+            padding-left: 15px;
+            margin-bottom: 20px;
+            background: rgba(236, 72, 153, 0.05);
+            padding: 10px 15px;
+            border-radius: 0 8px 8px 0;
+        }
+        .shot-title {
+            font-weight: bold;
+            color: var(--secondary);
+            margin-bottom: 5px;
+            font-size: 12px;
+            text-transform: uppercase;
         }
         .btn-copy {
             background-color: #374151;
@@ -146,7 +233,7 @@
             background-color: #4B5563;
         }
         .btn-copy.success {
-            background-color: #16A34A !important;
+            background-color: var(--success) !important;
         }
         .btn-primary {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
@@ -172,20 +259,20 @@
 <div class="container">
     <header>
         <h1>🐾 Little Paw Tales</h1>
-        <p class="subtitle">Master Pro Prompt & Content Engine (Global Viral Edition)</p>
+        <p class="subtitle">Master Pro Prompt Engine (Multi-Shot Sequence Edition)</p>
     </header>
 
     <div class="warning">
-        <strong>🔥 EXPERT BLUEPRINT:</strong> Always upload your locked <strong>Buddy</strong> and <strong>Mia</strong> reference images into Google Flow before executing generated prompts to maintain 100% visual consistency.
+        <strong>🔥 CHAINING MASTERCLASS:</strong> For 20s or 30s videos, AI generators need short prompts. Generate Shot 1 first. Then, take the <strong>LAST FRAME</strong> of Shot 1 and upload it as the reference image for Shot 2. This guarantees perfect continuity!
     </div>
 
-    <div class="grid-2">
+    <div class="grid-3">
         <div class="form-group">
             <label for="platformSelect">📱 Target Platform</label>
             <select id="platformSelect">
-                <option value="tiktok">TikTok (High Hook & Emotional Loop)</option>
-                <option value="instagram">Instagram Reels (Aesthetic & Visual Story)</option>
-                <option value="facebook" selected>Facebook Reels (Community & Heartwarming)</option>
+                <option value="tiktok">TikTok (High Hook)</option>
+                <option value="instagram">Instagram (Aesthetic)</option>
+                <option value="facebook" selected>Facebook (Community)</option>
             </select>
         </div>
 
@@ -194,55 +281,69 @@
             <select id="categorySelect" onchange="loadCategoryTopics()">
                 <option value="emotional">Emotional & Heartwarming</option>
                 <option value="sad">Sad & Deep Comfort</option>
-                <option value="friendship">Pure Friendship & Bonding</option>
+                <option value="friendship">Pure Friendship</option>
                 <option value="love">Deep Love & Affection</option>
                 <option value="surprise">Surprise & Joy</option>
-                <option value="advice">Kindness & Moral Advice</option>
-                <option value="humor">Wholesome Cute Humor</option>
+                <option value="advice">Kindness & Advice</option>
+                <option value="humor">Wholesome Humor</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="durationSelect">⏱️ Reel Duration</label>
+            <select id="durationSelect">
+                <option value="10">10 Seconds (1 Shot)</option>
+                <option value="20">20 Seconds (2 Shots)</option>
+                <option value="30">30 Seconds (3 Shots)</option>
             </select>
         </div>
     </div>
 
     <div class="form-group">
-        <label for="topicSelect">📚 Viral Story Select (Scroll to see hundreds of unique ideas)</label>
+        <label for="topicSelect">📚 Viral Story Select (1000+ Combinations)</label>
         <div style="display: flex; gap: 10px;">
             <select id="topicSelect" onchange="applySelectedTopic()" style="flex-grow: 1;">
                 <!-- Populated via Javascript -->
             </select>
-            <button class="btn-copy" style="background-color: #38BDF8; color: #0F172A; min-width: 140px;" onclick="loadCategoryTopics()">🔄 Refresh List</button>
+            <button class="btn-copy" style="background-color: #38BDF8; color: #0F172A; min-width: 140px;" onclick="loadCategoryTopics()">🔄 Shuffle Ideas</button>
         </div>
     </div>
 
     <div class="form-group">
-        <label for="actionInput">🎬 Custom or Selected Shot Action</label>
-        <textarea id="actionInput" rows="3" placeholder="Describe the 10-second action sequence..."></textarea>
+        <label for="actionInput">🎬 Custom/Selected Story Action (Hook; Action, Payoff)</label>
+        <textarea id="actionInput" rows="3" placeholder="Mia looks sad; Buddy brings a toy, making her smile."></textarea>
     </div>
 
     <div class="form-group">
-        <label for="cameraInput">🎥 Camera Motion & Framing</label>
+        <label for="cameraInput">🎥 Climax Camera Motion</label>
         <select id="cameraInput">
-            <option value="Slow smooth cinematic push-in close up, focusing on deep emotional expressions">Slow smooth cinematic push-in close up (Emotional Focus)</option>
-            <option value="Subtle static locked-off shot with shallow depth of field, gentle emotional atmosphere">Static locked-off cinematic shot (Intimate Focus)</option>
-            <option value="Slow cinematic pan revealing the characters in golden sunlight, smooth motion">Slow cinematic pan revealing characters in golden hour</option>
-            <option value="Low angle tracking shot following Buddy's joyful movement">Low angle tracking shot following Buddy's movement</option>
-            <option value="Soft orbital tracking shot around Mia and Buddy sharing a quiet moment">Soft orbital tracking shot around characters</option>
+            <option value="Slow smooth cinematic push-in close up, focusing on deep emotional expressions">Slow cinematic push-in (Emotional)</option>
+            <option value="Subtle static locked-off cinematic shot, shallow depth of field">Static locked-off shot (Intimate)</option>
+            <option value="Slow cinematic pan revealing the characters, smooth motion">Slow cinematic pan (Reveal)</option>
+            <option value="Low angle tracking shot following Buddy's joyful movement">Low angle tracking shot (Action)</option>
         </select>
     </div>
 
-    <button class="btn-primary" onclick="generateAllOutputs()" style="margin-bottom: 25px; font-size: 18px; padding: 20px;">🚀 GENERATE MASTER PROMPT & CONTENT</button>
-
-    <div class="output-section">
-        <div class="output-header">
-            <span class="output-title">🤖 1. Google Flow Master Video Prompt</span>
-            <button class="btn-copy" id="copyPromptBtn" onclick="copyContent('promptOutput', 'copyPromptBtn')">Copy Prompt</button>
+    <div class="form-group">
+        <div class="switch-container">
+            <span class="switch-label">🎙️ Add Emotional Voiceover (VO) Script?</span>
+            <label class="switch">
+                <input type="checkbox" id="voToggle">
+                <span class="slider"></span>
+            </label>
         </div>
-        <div id="promptOutput" class="output-box"></div>
+    </div>
+
+    <button class="btn-primary" onclick="generateAllOutputs()" style="margin-bottom: 25px; font-size: 18px; padding: 20px;">🚀 GENERATE MASTER SEQUENCE & CONTENT</button>
+
+    <div id="dynamicPromptsContainer">
+        <!-- Prompts injected here dynamically based on 10s, 20s, 30s -->
     </div>
 
     <div class="output-section">
         <div class="output-header">
             <span class="output-title">📝 2. Master Platform Caption</span>
-            <button class="btn-copy" id="copyCaptionBtn" onclick="copyContent('captionOutput', 'copyCaptionBtn')">Copy Caption</button>
+            <button class="btn-copy" id="copyCaptionBtn" onclick="copyText(document.getElementById('captionOutput').innerText, this)">Copy Caption</button>
         </div>
         <div id="captionOutput" class="output-box"></div>
     </div>
@@ -250,274 +351,210 @@
     <div class="output-section">
         <div class="output-header">
             <span class="output-title">🏷️ 3. Viral Hashtags Bank</span>
-            <button class="btn-copy" id="copyHashtagsBtn" onclick="copyContent('hashtagsOutput', 'copyHashtagsBtn')">Copy Hashtags</button>
+            <button class="btn-copy" id="copyHashtagsBtn" onclick="copyText(document.getElementById('hashtagsOutput').innerText, this)">Copy Hashtags</button>
         </div>
         <div id="hashtagsOutput" class="output-box"></div>
     </div>
 
     <div class="output-section">
         <div class="output-header">
-            <span class="output-title">🎤 4. 10-Second On-Screen Rhythm / Voiceover Script</span>
-            <button class="btn-copy" id="copyPoemBtn" onclick="copyContent('poemOutput', 'copyPoemBtn')">Copy Script</button>
+            <span class="output-title" id="scriptTitle">🎤 4. Master Script (Text / Voiceover)</span>
+            <button class="btn-copy" id="copyPoemBtn" onclick="copyText(document.getElementById('poemOutput').innerText, this)">Copy Script</button>
         </div>
         <div id="poemOutput" class="output-box" style="font-size: 14px; text-align: left; line-height: 1.8;"></div>
     </div>
 </div>
 
 <script>
-    // Massive Story Combinator Arrays (10x10x10 = 1000+ combinations per category)
+    // Massive Story Combinator Arrays
     const storyElements = {
         emotional: {
-            hooks: [
-                "Mia is sitting on the sidewalk steps looking down sadly", "Mia is looking at an old photo album with a tear in her eye", "Mia is shivering slightly in the cool evening breeze", "Mia looks overwhelmed after dropping her ice cream", "Mia is sitting quietly by herself on a park bench", "Mia is gazing out the window at the setting sun", "Mia holds a broken toy in her hands", "Mia is sitting on the porch feeling a bit lonely", "Mia sighs heavily while drawing a picture", "Mia is resting her head on her knees"
-            ],
-            actions: [
-                "Buddy trots over with his favorite chew toy", "Buddy rests his paw softly on her hand", "Buddy snuggles close against her side", "Buddy shares his special dog biscuit", "Buddy looks up at her with deep empathetic eyes", "Buddy gently nudges her shoulder with his wet nose", "Buddy brings her a glowing firefly in a jar", "Buddy rests his chin softly on her lap", "Buddy wraps his small paws around her arm", "Buddy sits silently right beside her"
-            ],
-            payoffs: [
-                "placing it gently on her lap to cheer her up.", "wrapping her in comforting warmth.", "bringing an instant warm smile to her face.", "reminding her she is never alone.", "making her giggle through her tears.", "showing her the magic of pure loyalty.", "filling the quiet moment with love.", "acting as her tiny guardian angel.", "making the heavy feelings melt away.", "proving they are best friends forever."
-            ]
+            hooks: ["Mia is sitting on the sidewalk steps looking down sadly", "Mia is looking at an old photo album with a tear in her eye", "Mia is shivering slightly in the cool evening breeze", "Mia drops her ice cream and looks overwhelmed", "Mia is gazing out the window at the setting sun"],
+            actions: ["Buddy trots over with his favorite chew toy", "Buddy rests his paw softly on her hand", "Buddy snuggles close against her side", "Buddy looks up at her with deep empathetic eyes", "Buddy brings her a glowing firefly in a jar"],
+            payoffs: ["placing it gently on her lap to cheer her up.", "wrapping her in comforting warmth.", "bringing an instant warm smile to her face.", "making her giggle through her tears.", "proving they are best friends forever."]
         },
         sad: {
-            hooks: [
-                "Heavy rain falls in Little Paw Town as Mia feels isolated", "A dark storm passes over while Mia hides under a blanket", "Mia feels lost sitting alone on the garden bench", "The neighborhood park is empty and quiet today", "Mia is crying softly over a scraped knee", "The sky is gray and Mia looks out feeling helpless", "Mia drops her favorite book in a muddy puddle", "The wind blows a chill as Mia hugs herself", "Mia is sitting in the shadows of the porch", "Tears fall slowly down Mia's cheeks"
-            ],
-            actions: [
-                "Buddy silently walks up and sits firmly beside her", "Buddy crawls under the blanket with a warm flashlight", "Buddy nudges her gently and whines softly", "Buddy brings her a beautiful fallen autumn leaf", "Buddy rests his heavy head on her knee", "Buddy licks away a tear from her cheek", "Buddy pulls her close with his tiny paws", "Buddy lies across her feet to keep them warm", "Buddy stares at her with deep, soulful, understanding eyes", "Buddy softly howls a tiny comforting tune"
-            ],
-            payoffs: [
-                "whispering quiet comfort through his presence.", "sharing the heavy silence together.", "providing unconditional pure love.", "staying by her side until the sun comes out.", "letting her know it's okay to be sad.", "bringing a tiny spark of light to the dark.", "protecting her heart from the cold.", "healing her sadness with a gentle touch.", "standing together against the storm.", "making her feel perfectly safe."
-            ]
+            hooks: ["Heavy rain falls as Mia feels isolated", "A dark storm passes over while Mia hides under a blanket", "Mia feels lost sitting alone on the garden bench", "Mia is crying softly over a scraped knee", "The wind blows a chill as Mia hugs herself"],
+            actions: ["Buddy silently walks up and sits firmly beside her", "Buddy crawls under the blanket with a warm flashlight", "Buddy nudges her gently and whines softly", "Buddy rests his heavy head on her knee", "Buddy stares at her with deep, soulful, understanding eyes"],
+            payoffs: ["whispering quiet comfort through his presence.", "sharing the heavy silence together.", "staying by her side until the sun comes out.", "healing her sadness with a gentle touch.", "making her feel perfectly safe."]
         },
         friendship: {
-            hooks: [
-                "Mia and Buddy walk side by side down the stone pathway", "Mia gently brushes Buddy's fluffy golden fur", "Mia and Buddy share a moment of quiet understanding", "Mia reads an adventure book out loud", "Mia builds a small fort out of pillows", "Mia and Buddy are watching the clouds float by", "Mia is drawing a chalk heart on the sidewalk", "Mia and Buddy share a tasty afternoon snack", "Mia is tying a beautiful new ribbon on his collar", "Mia and Buddy are sitting by a small babbling brook"
-            ],
-            actions: [
-                "Buddy rests his chin on her lap listening intently", "Buddy wags his tail in perfect rhythm with her steps", "Buddy barks happily and licks her nose", "Buddy stands guard proudly like a tiny knight", "Buddy leans his weight softly against her leg", "Buddy copies her exact sitting posture", "Buddy gently rests his paw perfectly inside her hand", "Buddy twirls around excitedly in circles", "Buddy looks at her like she is his whole world", "Buddy softly rests his head against her shoulder"
-            ],
-            payoffs: [
-                "enjoying the golden hour glow.", "finding peace in each other's company.", "showing the beauty of true loyalty.", "creating a perfect childhood memory.", "proving they are best friends forever.", "celebrating their unbreakable bond.", "enjoying a magical, wholesome afternoon.", "speaking a silent language of friendship.", "radiating pure, innocent joy.", "making Little Paw Town feel like heaven."
-            ]
+            hooks: ["Mia and Buddy walk side by side down the stone pathway", "Mia gently brushes Buddy's fluffy golden fur", "Mia reads an adventure book out loud", "Mia builds a small fort out of pillows", "Mia is drawing a chalk heart on the sidewalk"],
+            actions: ["Buddy rests his chin on her lap listening intently", "Buddy wags his tail in perfect rhythm with her steps", "Buddy stands guard proudly like a tiny knight", "Buddy copies her exact sitting posture", "Buddy looks at her like she is his whole world"],
+            payoffs: ["enjoying the golden hour glow.", "showing the beauty of true loyalty.", "creating a perfect childhood memory.", "celebrating their unbreakable bond.", "radiating pure, innocent joy."]
         },
         love: {
-            hooks: [
-                "Mia holds a small glowing lantern in the twilight", "Mia is gently kissing the top of Buddy's head", "Mia is weaving a beautiful flower crown", "The sun sets painting the sky pink as Mia smiles", "Mia holds Buddy tightly in a warm embrace", "Mia is whispering a secret into Buddy's floppy ear", "Mia traces a heart pattern on Buddy's fur", "Mia and Buddy are framed by a beautiful blooming archway", "Mia holds out her hand softly toward Buddy", "Mia gazes deeply into Buddy's warm brown eyes"
-            ],
-            actions: [
-                "Buddy looks back with eyes full of absolute devotion", "Buddy gently places the flower crown on his own head", "Buddy nuzzles his face deeply into her neck", "Buddy closes his eyes and leans into her touch", "Buddy gently licks her fingers one by one", "Buddy wraps his tiny paws around her wrist", "Buddy rests his warm heart against hers", "Buddy lets out a soft, contented sigh", "Buddy places his paw over his chest playfully", "Buddy beams a warm, heartwarming puppy smile"
-            ],
-            payoffs: [
-                "showing a love that needs no words.", "creating a bond that lasts a lifetime.", "illuminating the world with pure affection.", "sharing a moment of absolute perfection.", "proving a dog's love is the purest magic.", "filling the cool evening with immense warmth.", "beating with one connected heart.", "making the whole universe feel right.", "sparking a feeling of deep, eternal love.", "capturing the essence of Little Paw Tales."
-            ]
+            hooks: ["Mia holds a small glowing lantern in the twilight", "Mia is gently kissing the top of Buddy's head", "The sun sets painting the sky pink as Mia smiles", "Mia holds Buddy tightly in a warm embrace", "Mia traces a heart pattern on Buddy's fur"],
+            actions: ["Buddy looks back with eyes full of absolute devotion", "Buddy nuzzles his face deeply into her neck", "Buddy closes his eyes and leans into her touch", "Buddy rests his warm heart against hers", "Buddy lets out a soft, contented sigh"],
+            payoffs: ["showing a love that needs no words.", "creating a bond that lasts a lifetime.", "sharing a moment of absolute perfection.", "making the whole universe feel right.", "sparking a feeling of deep, eternal love."]
         },
         surprise: {
-            hooks: [
-                "Buddy digs up a gorgeous blooming yellow daisy", "Mia hides behind a wooden fence post and jumps out", "A bright blue butterfly lands softly on Buddy's black nose", "Buddy finds a tiny wrapped box on the doorstep", "Mia pours fresh clean water into a little ceramic bowl", "Buddy spots a tiny green frog on a lilypad", "Mia blows shimmering soap bubbles into the air", "Buddy accidentally uncovers a hidden glowing stone", "Mia opens a magical pop-up storybook", "A gentle breeze blows a flurry of cherry blossoms"
-            ],
-            actions: [
-                "Buddy freezes in wonder with wide eyes", "Buddy does a funny little puppy hop of pure excitement", "Buddy gently pushes it toward Mia with his nose", "Buddy splashes his paw playfully, causing a splash", "Buddy tilts his head completely sideways in confusion", "Buddy chases the bubbles with joyful leaps", "Buddy gently catches a blossom on his tongue", "Buddy looks back and forth between Mia and the surprise", "Buddy lets out a tiny, high-pitched excited bark", "Buddy wiggles his whole body with happiness"
-            ],
-            payoffs: [
-                "while Mia giggles quietly.", "creating a delightful surprise moment.", "bringing a spark of magic to the day.", "discovering the wonders of Little Paw Town.", "sharing a perfectly unexpected joy.", "making Mia laugh uncontrollably.", "lighting up the afternoon with fun.", "showing the beauty of small surprises.", "turning an ordinary day into an adventure.", "capturing a perfectly wholesome memory."
-            ]
+            hooks: ["Buddy digs up a gorgeous blooming yellow daisy", "A bright blue butterfly lands softly on Buddy's black nose", "Buddy finds a tiny wrapped box on the doorstep", "Mia blows shimmering soap bubbles into the air", "Buddy accidentally uncovers a hidden glowing stone"],
+            actions: ["Buddy freezes in wonder with wide eyes", "Buddy does a funny little puppy hop of pure excitement", "Buddy tilts his head completely sideways in confusion", "Buddy chases the bubbles with joyful leaps", "Buddy looks back and forth between Mia and the surprise"],
+            payoffs: ["while Mia giggles quietly.", "bringing a spark of magic to the day.", "making Mia laugh uncontrollably.", "lighting up the afternoon with fun.", "turning an ordinary day into an adventure."]
         },
         advice: {
-            hooks: [
-                "Buddy gently nudges Mia's hand away from a thorny bush", "Mia shares half of her soft pretzel with Buddy", "Buddy stops to comfort a lonely stray kitten", "Mia helps Buddy untangle his leash from a post", "Buddy sits upright and alert, guarding Mia's bag", "Mia carefully bandages a small scratch on Buddy's paw", "Buddy leads Mia away from a deep muddy puddle", "Mia patiently teaches Buddy how to wait", "Buddy waits faithfully at the crosswalk", "Mia gently helps a small bird back into its nest"
-            ],
-            actions: [
-                "teaching her caution with a wise canine gaze", "demonstrating the beauty of true sharing", "inspiring Mia to open her heart", "showing patience and steadfast loyalty", "proving that small acts make a big difference", "looking at her with deep trust and gratitude", "guiding her with protective instincts", "learning the value of gentle patience", "showing that rules keep us safe", "sharing a moment of pure empathy"
-            ],
-            payoffs: [
-                "in everyday life.", "with unconditional kindness.", "through their special bond.", "in the heart of Little Paw Town.", "reminding everyone to be kind.", "learning life's little lessons together.", "growing wiser side by side.", "teaching us how to love.", "with a gentle and pure spirit.", "making the world a better place."
-            ]
+            hooks: ["Buddy gently nudges Mia's hand away from a thorny bush", "Mia shares half of her soft pretzel with Buddy", "Buddy stops to comfort a lonely stray kitten", "Mia carefully bandages a small scratch on Buddy's paw", "Buddy leads Mia away from a deep muddy puddle"],
+            actions: ["teaching her caution with a wise canine gaze", "demonstrating the beauty of true sharing", "inspiring Mia to open her heart", "looking at her with deep trust and gratitude", "guiding her with protective instincts"],
+            payoffs: ["in everyday life.", "with unconditional kindness.", "through their special bond.", "learning life's little lessons together.", "making the world a better place."]
         },
         humor: {
-            hooks: [
-                "Buddy gets his head playfully stuck inside a flower pot", "Buddy chases his own fluffy tail in frantic circles", "Mia tries to teach Buddy how to sit on command", "Buddy spots his own reflection in a shiny puddle", "Buddy yawns a huge dramatic puppy yawn", "Buddy tries to carry a stick that is way too big", "Buddy gets scared by his own tiny shadow", "Buddy is dreaming and running in his sleep", "Mia accidentally drops a single piece of popcorn", "Buddy wears a pair of oversized sunglasses"
-            ],
-            actions: [
-                "wiggling his tail while Mia laughs heartily", "until he gets dizzy and flops down with a funny grin", "instead, Buddy gives her a high-five paw tap", "and tilts his head sideways with complete confusion", "right as Mia is trying to take a serious photo", "wobbling back and forth comically", "jumping straight up into the air", "making funny little squeaking noises", "Buddy dives for it like an action hero", "striking a hilarious superstar pose"
-            ],
-            payoffs: [
-                "bringing pure comedic joy.", "making it impossible not to smile.", "showing his goofy, lovable personality.", "creating a perfectly funny memory.", "causing Mia to burst into laughter.", "being the cutest clown in town.", "proving dogs are the best medicine.", "sharing a wholesome, funny moment.", "making the day instantly brighter.", "adding a splash of fun to Little Paw Town."
-            ]
+            hooks: ["Buddy gets his head playfully stuck inside a flower pot", "Buddy chases his own fluffy tail in frantic circles", "Buddy spots his own reflection in a shiny puddle", "Buddy tries to carry a stick that is way too big", "Buddy is dreaming and running in his sleep"],
+            actions: ["wiggling his tail while Mia laughs heartily", "until he gets dizzy and flops down with a funny grin", "and tilts his head sideways with complete confusion", "wobbling back and forth comically", "making funny little squeaking noises"],
+            payoffs: ["bringing pure comedic joy.", "making it impossible not to smile.", "causing Mia to burst into laughter.", "being the cutest clown in town.", "adding a splash of fun to Little Paw Town."]
         }
     };
 
-    // Pro 10-Second Rhythmic Pacing Scripts for Reels/TikToks
-    const rhythmicVoiceovers = {
-        emotional: [
-            { line1: "When words aren't enough...", line3: "A gentle friend changes everything. ❤️" },
-            { line1: "Some days feel a little heavy...", line3: "But love always finds a way to lighten the load. 🐾" }
-        ],
-        sad: [
-            { line1: "Even on the darkest days...", line3: "You never have to face the storm alone. ✨" },
-            { line1: "Tears may fall sometimes...", line3: "But true comfort is always right beside you. 🌧️" }
-        ],
-        friendship: [
-            { line1: "Side by side...", line3: "The best adventures are the ones we share. 🌟" },
-            { line1: "Tiny steps, big journeys...", line3: "Best friends forever in Little Paw Town. 🐾" }
-        ],
-        love: [
-            { line1: "Some souls just know...", line3: "Exactly how to bring warmth to your heart. 🌅" },
-            { line1: "A simple look...", line3: "A love that needs absolutely no words. ❤️" }
-        ],
-        surprise: [
-            { line1: "The very best moments...", line3: "Are the ones you never see coming! 🦋" },
-            { line1: "Look closely...", line3: "There is magic hiding in every single day. ✨" }
-        ],
-        advice: [
-            { line1: "Small acts of kindness...", line3: "Create ripples that change the whole world. 🌍" },
-            { line1: "Patience and love...", line3: "Are the greatest lessons we can ever learn. 📖" }
-        ],
-        humor: [
-            { line1: "Life is just too short...", line3: "Not to laugh at the silly things! 😂" },
-            { line1: "Pure chaos...", line3: "But we wouldn't have it any other way! 🐶" }
-        ]
+    const voScripts = {
+        emotional: ["In Little Paw Town, some days feel a bit heavy...", "But true friends don't need words to speak to your heart.", "Because the smallest acts of love... leave the biggest footprints."],
+        sad: ["When the clouds roll in and the world feels cold...", "A loyal friend will weather the storm right by your side.", "Reminding you that after the rain... the sun always returns."],
+        friendship: ["Every step is an adventure when you have your best friend.", "Through laughter and quiet moments...", "We build memories that will last a lifetime."],
+        love: ["There is a special magic in the bond we share.", "A pure, innocent connection that warms the coldest days.", "Because true love... is simply being there."],
+        surprise: ["The best moments in life are the ones we never plan.", "A sudden spark of joy that makes your heart leap.", "Proving that magic is real... if you just look closely."],
+        advice: ["Life teaches us beautiful lessons in the quietest ways.", "A gentle nudge in the right direction...", "Shows us that kindness is our greatest compass."],
+        humor: ["Sometimes you just have to embrace the pure chaos!", "Life is too short to be serious all the time.", "And a little laughter... is the best medicine for the soul."]
     };
 
     const actionInput = document.getElementById('actionInput');
     const categorySelect = document.getElementById('categorySelect');
     const topicSelect = document.getElementById('topicSelect');
-    const platformSelect = document.getElementById('platformSelect');
-    const cameraInput = document.getElementById('cameraInput');
-
-    // Unicode converter for beautiful fonts
+    
     function toBeautifulFont(str) {
-        const chars = {
-            'a':'𝓪','b':'𝓫','c':'𝓬','d':'𝓭','e':'𝓮','f':'𝓯','g':'𝓰','h':'𝓱','i':'𝓲','j':'𝓳','k':'𝓴','l':'𝓵','m':'𝓶','n':'𝓷','o':'𝓸','p':'𝓹','q':'𝓺','r':'𝓻','s':'𝓼','t':'𝓽','u':'𝓾','v':'𝓿','w':'𝔀','x':'𝔁','y':'𝔂','z':'𝔃',
-            'A':'𝓐','B':'𝓑','C':'𝓒','D':'𝓓','E':'𝓔','F':'𝓕','G':'𝓖','H':'𝓗','I':'𝓘','J':'𝓙','K':'𝓚','L':'𝓛','M':'𝓜','N':'𝓝','O':'𝓞','P':'𝓟','Q':'𝓠','R':'𝓡','S':'𝓢','T':'𝓣','U':'𝓤','V':'𝓥','W':'𝓦','X':'𝓧','Y':'𝓨','Z':'𝓩'
-        };
+        const chars = {'a':'𝓪','b':'𝓫','c':'𝓬','d':'𝓭','e':'𝓮','f':'𝓯','g':'𝓰','h':'𝓱','i':'𝓲','j':'𝓳','k':'𝓴','l':'𝓵','m':'𝓶','n':'𝓷','o':'𝓸','p':'𝓹','q':'𝓺','r':'𝓻','s':'𝓼','t':'𝓽','u':'𝓾','v':'𝓿','w':'𝔀','x':'𝔁','y':'𝔂','z':'𝔃',
+                       'A':'𝓐','B':'𝓑','C':'𝓒','D':'𝓓','E':'𝓔','F':'𝓕','G':'𝓖','H':'𝓗','I':'𝓘','J':'𝓙','K':'𝓚','L':'𝓛','M':'𝓜','N':'𝓝','O':'𝓞','P':'𝓟','Q':'𝓠','R':'𝓡','S':'𝓢','T':'𝓣','U':'𝓤','V':'𝓥','W':'𝓦','X':'𝓧','Y':'𝓨','Z':'𝓩'};
         return str.split('').map(c => chars[c] || c).join('');
     }
 
     function loadCategoryTopics() {
         const cat = categorySelect.value;
-        const elements = storyElements[cat] || storyElements['emotional'];
-        
+        const elements = storyElements[cat];
         topicSelect.innerHTML = '';
-        
-        // Generate 150 random combinations for the dropdown to simulate massive variety
         for(let i = 0; i < 150; i++) {
             const hook = elements.hooks[Math.floor(Math.random() * elements.hooks.length)];
             const action = elements.actions[Math.floor(Math.random() * elements.actions.length)];
             const payoff = elements.payoffs[Math.floor(Math.random() * elements.payoffs.length)];
-            
             const generatedStory = `${hook}; ${action}, ${payoff}`;
-            
             const opt = document.createElement('option');
             opt.value = generatedStory;
-            opt.text = `Idea #${i + 1}: ${generatedStory.substring(0, 80)}...`;
+            opt.text = `Idea #${i + 1}: ${generatedStory.substring(0, 75)}...`;
             topicSelect.appendChild(opt);
         }
         applySelectedTopic();
     }
 
     function applySelectedTopic() {
-        if (topicSelect.value) {
-            actionInput.value = topicSelect.value;
-        }
+        if (topicSelect.value) actionInput.value = topicSelect.value;
     }
 
     function generateAllOutputs() {
-        const action = actionInput.value.trim() || "Mia and Buddy share a touching moment together under the golden hour sunlight in Little Paw Town.";
-        const camera = cameraInput.value;
-        const platform = platformSelect.value;
+        const duration = parseInt(document.getElementById('durationSelect').value);
+        const actionText = actionInput.value.trim();
+        const climaxCamera = document.getElementById('cameraInput').value;
+        const useVO = document.getElementById('voToggle').checked;
+        const cat = categorySelect.value;
+        const platform = document.getElementById('platformSelect').value;
 
-        // 1. Prompt Generation (Watermark built-in)
-        const promptText = `Premium cinematic 3D storybook animation, Unreal Engine 5 render style, 8K ultra-high resolution, masterpiece. USE ATTACHED REFERENCE IMAGES FOR CHARACTER CONSISTENCY. CHARACTER 1: Buddy, a small adorable golden-brown puppy with soft fluffy realistic fur, floppy ears, large expressive warm brown canine eyes, a black dog nose, a real canine muzzle, wearing a tiny elegant blue collar. CHARACTER 2: Mia, a 6-year-old girl with warm brown wavy hair, expressive kind eyes, wearing a simple tasteful pastel lavender dress and a cream cardigan. ACTION: ${action}. ENVIRONMENT: Little Paw Town, a beautiful cozy American-style small town, quiet sidewalk. LIGHTING & VIBE: Emotional, highly detailed, soft volumetric golden hour sunlight, subtle warm glow, cinematic shallow depth of field. BRANDING: Include a subtle, elegant, small watermark text "Little Paw Tales" in the bottom right corner. CAMERA MOVEMENT: ${camera}. Vertical 9:16 aspect ratio.`;
-        document.getElementById('promptOutput').innerText = promptText;
+        // Base Template
+        const baseStart = `Premium cinematic 3D storybook animation, Unreal Engine 5 render style, 8K resolution. USE ATTACHED REFERENCE IMAGES FOR CHARACTER CONSISTENCY. CHARACTER 1: Buddy, a small adorable golden-brown puppy with soft fluffy realistic fur, floppy ears, warm brown canine eyes, black dog nose, real canine muzzle, tiny elegant blue collar. CHARACTER 2: Mia, a 6-year-old girl with warm brown wavy hair, expressive kind eyes, simple tasteful pastel lavender dress, cream cardigan. ACTION: `;
+        const baseEnd = ` ENVIRONMENT: Little Paw Town, cozy American small town, quiet sidewalk. LIGHTING & VIBE: Emotional, highly detailed, soft volumetric golden hour sunlight, subtle warm glow. Add a subtle, elegant, small watermark text "Little Paw Tales" in the bottom right corner. CAMERA MOVEMENT: `;
 
-        // Extract a short summary for the caption
-        let shortSummary = action.split(';')[0]; // Grabs the hook
-        if(!shortSummary) shortSummary = action;
-        let beautifulSummary = toBeautifulFont(shortSummary + "...");
+        // Split action into beats
+        let beats = actionText.split(/(?:;|,(?=\s))/).map(b => b.trim());
+        let hook = beats[0] || actionText;
+        let action = beats[1] || hook;
+        let payoff = beats[2] || action;
 
-        // 2. Caption Generation based on Platform + Beautiful Mini-Story
-        let captionText = "";
-        if (platform === 'tiktok') {
-            captionText = `✨ 𝓣𝓱𝓮 𝓢𝓽𝓸𝓻𝔂 ✨\n🐾 ${beautifulSummary}\n\nSometimes all you need is a loyal friend by your side. Watch how Buddy makes Mia's day instantly brighter in Little Paw Town. ❤️\n\nDrop a ❤️ if this made you smile today!`;
-        } else if (platform === 'instagram') {
-            captionText = `✨ 𝓣𝓱𝓮 𝓢𝓽𝓸𝓻𝔂 ✨\n🌸 ${beautifulSummary}\n\nTiny paws. Big feelings. Every corner of Little Paw Town holds a quiet moment of pure friendship. Let Buddy and Mia remind you of the magic in small acts of love. 🐶 \n\nSave this reel when you need a little comfort today. 💌`;
-        } else {
-            captionText = `✨ 𝓣𝓱𝓮 𝓢𝓽𝓸𝓻𝔂 ✨\n📖 ${beautifulSummary}\n\nWelcome to Little Paw Town! When words aren't enough, a faithful friend like Buddy knows exactly how to heal a heavy heart. Join Mia and Buddy on their heartwarming journey.\n\nLike and Follow for daily emotional stories! ❤️🐾`;
+        const promptsContainer = document.getElementById('dynamicPromptsContainer');
+        promptsContainer.innerHTML = '';
+        
+        let numShots = duration / 10;
+        
+        // Render Prompt Blocks
+        for(let i = 1; i <= numShots; i++) {
+            let shotAction = "";
+            let shotCamera = "";
+            let shotInstructions = "";
+
+            if (numShots === 1) {
+                shotAction = actionText;
+                shotCamera = climaxCamera;
+                shotInstructions = "Upload your base Buddy and Mia reference images into Google Flow.";
+            } else if (numShots === 2) {
+                if (i===1) { shotAction = hook; shotCamera = "Wide to medium establishing shot, slow gentle zoom."; shotInstructions = "Upload base references."; }
+                if (i===2) { shotAction = `${action} ${payoff}`; shotCamera = climaxCamera; shotInstructions = "⚠️ CRITICAL: Upload the LAST FRAME of Shot 1 as your input image for Shot 2."; }
+            } else { // 3 shots
+                if (i===1) { shotAction = hook; shotCamera = "Cinematic establishing shot, slow subtle pan."; shotInstructions = "Upload base references."; }
+                if (i===2) { shotAction = action; shotCamera = "Medium shot, tracking the characters."; shotInstructions = "⚠️ CRITICAL: Upload the LAST FRAME of Shot 1 as your input image for Shot 2."; }
+                if (i===3) { shotAction = payoff; shotCamera = climaxCamera; shotInstructions = "⚠️ CRITICAL: Upload the LAST FRAME of Shot 2 as your input image for Shot 3."; }
+            }
+
+            const fullPrompt = `${baseStart}${shotAction}.${baseEnd}${shotCamera}. Vertical 9:16 aspect ratio.`;
+            
+            const shotDiv = document.createElement('div');
+            shotDiv.className = 'output-section';
+            shotDiv.innerHTML = `
+                <div class="output-header">
+                    <span class="output-title">🤖 1. Google Flow Video Prompt - SHOT ${i} OF ${numShots} (0:${(i-1)*10} to 0:${i*10})</span>
+                    <button class="btn-copy" onclick="copyText(this.parentElement.nextElementSibling.nextElementSibling.innerText, this)">Copy Prompt</button>
+                </div>
+                <div class="info-box">${shotInstructions}</div>
+                <div class="output-box" style="margin-bottom:0;">${fullPrompt}</div>
+            `;
+            promptsContainer.appendChild(shotDiv);
         }
+
+        // 2. Caption Generation
+        let shortSummary = hook.split(';')[0];
+        let beautifulSummary = toBeautifulFont(shortSummary + "...");
+        let captionText = "";
+        
+        if (platform === 'tiktok') captionText = `✨ 𝓣𝓱𝓮 𝓢𝓽𝓸𝓻𝔂 ✨\n🐾 ${beautifulSummary}\n\nSometimes all you need is a loyal friend by your side. Watch Buddy and Mia's heartwarming bond in Little Paw Town. ❤️\n\nDrop a ❤️ if this made you smile!`;
+        else if (platform === 'instagram') captionText = `✨ 𝓣𝓱𝓮 𝓢𝓽𝓸𝓻𝔂 ✨\n🌸 ${beautifulSummary}\n\nTiny paws. Big feelings. Every corner of Little Paw Town holds a quiet moment of pure friendship. Let Buddy and Mia remind you of the magic in small acts of love. 🐶 \n\nSave this reel when you need comfort. 💌`;
+        else captionText = `✨ 𝓣𝓱𝓮 𝓢𝓽𝓸𝓻𝔂 ✨\n📖 ${beautifulSummary}\n\nWelcome to Little Paw Town! When words aren't enough, a faithful friend like Buddy knows exactly how to heal a heart. Join Mia and Buddy on their journey.\n\nLike and Follow for daily stories! ❤️🐾`;
+        
         document.getElementById('captionOutput').innerText = captionText;
 
-        // 3. Targeted Hashtags Generation based on Category
-        let baseHashtags = `#LittlePawTales #PuppyLove #WholesomeStories #EmotionalShorts #DogLovers #CutePuppy #FriendshipGoals #LittlePawTown`;
-        const cat = categorySelect.value;
-        if(cat === 'emotional' || cat === 'sad' || cat === 'love') baseHashtags += ` #Heartwarming #ReelsFeelss #EmotionalJourney #UnconditionalLove`;
-        if(cat === 'humor' || cat === 'surprise') baseHashtags += ` #FunnyDogs #CutePets #JoyfulMoments #PuppyPlaytime`;
-        if(cat === 'advice' || cat === 'friendship') baseHashtags += ` #LifeLessons #BestFriends #KindnessMatters #Loyalty`;
-        
+        // 3. Hashtags
+        let baseHashtags = `#LittlePawTales #PuppyLove #WholesomeStories #EmotionalShorts #DogLovers #LittlePawTown`;
+        if(cat === 'emotional' || cat === 'sad' || cat === 'love') baseHashtags += ` #Heartwarming #ReelsFeelss #EmotionalJourney`;
+        if(cat === 'humor' || cat === 'surprise') baseHashtags += ` #FunnyDogs #CutePets #JoyfulMoments`;
+        if(cat === 'advice' || cat === 'friendship') baseHashtags += ` #LifeLessons #BestFriends #KindnessMatters`;
         document.getElementById('hashtagsOutput').innerText = baseHashtags;
 
-        // 4. 10-Second Rhythmic On-Screen Script Generation
-        const categoryScripts = rhythmicVoiceovers[cat] || rhythmicVoiceovers['emotional'];
-        const randomScript = categoryScripts[Math.floor(Math.random() * categoryScripts.length)];
-        
-        // Clean up the hook summary to fit beautifully in the script
-        let cleanHook = shortSummary.trim();
-        if (cleanHook.endsWith(';') || cleanHook.endsWith(',')) {
-            cleanHook = cleanHook.slice(0, -1);
+        // 4. Script / VO
+        const scriptBox = document.getElementById('poemOutput');
+        const scriptTitle = document.getElementById('scriptTitle');
+        const voLines = voScripts[cat];
+        let scriptText = "";
+
+        if (useVO) {
+            scriptTitle.innerText = "🎤 4. Master Script (Professional Voiceover)";
+            if(duration === 10) scriptText = `⏱️ [0:00 - 0:10] VOICEOVER:\n" ${voLines[0]} ${voLines[2]} "`;
+            if(duration === 20) scriptText = `⏱️ [0:00 - 0:10] VOICEOVER:\n" ${voLines[0]} "\n\n⏱️ [0:10 - 0:20] VOICEOVER:\n" ${voLines[1]} ${voLines[2]} "`;
+            if(duration === 30) scriptText = `⏱️ [0:00 - 0:10] VOICEOVER:\n" ${voLines[0]} "\n\n⏱️ [0:10 - 0:20] VOICEOVER:\n" ${voLines[1]} "\n\n⏱️ [0:20 - 0:30] VOICEOVER:\n" ${voLines[2]} "`;
+        } else {
+            scriptTitle.innerText = "🎤 4. Master Script (On-Screen Rhythm Text)";
+            if(duration === 10) {
+                scriptText = `⏱️ [0:00 - 0:03] TEXT: "${voLines[0]}"\n⏱️ [0:04 - 0:06] (Visual beat: ${hook}...)\n⏱️ [0:07 - 0:10] TEXT: "${voLines[2]}"`;
+            } else if (duration === 20) {
+                scriptText = `⏱️ [0:00 - 0:04] TEXT: "${voLines[0]}"\n⏱️ [0:05 - 0:12] (Visual beat: ${action}...)\n⏱️ [0:14 - 0:19] TEXT: "${voLines[2]}"`;
+            } else {
+                scriptText = `⏱️ [0:00 - 0:05] TEXT: "${voLines[0]}"\n⏱️ [0:08 - 0:12] (Visual beat: ${hook}...)\n⏱️ [0:14 - 0:19] TEXT: "${voLines[1]}"\n⏱️ [0:22 - 0:28] TEXT: "${voLines[2]}"`;
+            }
         }
-        cleanHook = cleanHook.charAt(0).toLowerCase() + cleanHook.slice(1);
-
-        const rhythmText = 
-            `⏱️ [0:00 - 0:03] ON-SCREEN TEXT:\n"${randomScript.line1}"\n\n` +
-            `⏱️ [0:04 - 0:06] VISUAL BEAT (No text, just emotion):\n( ${cleanHook}... )\n\n` +
-            `⏱️ [0:07 - 0:10] ON-SCREEN TEXT:\n"${randomScript.line3}"`;
-
-        document.getElementById('poemOutput').innerText = rhythmText;
+        scriptBox.innerText = scriptText;
     }
 
-    function copyContent(elementId, btnId) {
-        const text = document.getElementById(elementId).innerText;
-        const btn = document.getElementById(btnId);
-        
-        try {
-            navigator.clipboard.writeText(text).then(() => {
-                showSuccessState(btn);
-            }).catch(err => {
-                fallbackCopy(text, btn);
-            });
-        } catch(e) {
-            fallbackCopy(text, btn);
-        }
+    function copyText(text, btn) {
+        navigator.clipboard.writeText(text).then(() => {
+            const originalText = btn.innerText;
+            btn.innerText = "✅ Copied!";
+            btn.classList.add('success');
+            setTimeout(() => { btn.innerText = originalText; btn.classList.remove('success'); }, 2000);
+        });
     }
 
-    function fallbackCopy(text, btn) {
-        const textArea = document.createElement("textarea");
-        textArea.value = text;
-        textArea.style.position = "fixed";
-        textArea.style.top = "0";
-        textArea.style.left = "0";
-        document.body.appendChild(textArea);
-        textArea.focus();
-        textArea.select();
-        try {
-            document.execCommand('copy');
-            showSuccessState(btn);
-        } catch (err) {
-            console.error('Copy failed', err);
-        }
-        document.body.removeChild(textArea);
-    }
-
-    function showSuccessState(btn) {
-        const originalText = btn.innerText;
-        btn.innerText = "✅ Copied!";
-        btn.classList.add('success');
-        setTimeout(() => {
-            btn.innerText = originalText;
-            btn.classList.remove('success');
-        }, 2000);
-    }
-
-    // Initialize on load
+    // Init
     loadCategoryTopics();
 </script>
 
